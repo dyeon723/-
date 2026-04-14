@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전력공학 기출문제</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3350;
+    --accent: #4f7fff;
+    --accent2: #7c5cfc;
+    --correct: #22c55e;
+    --wrong: #ef4444;
+    --text: #e8eaf6;
+    --text2: #8b91b3;
+    --yellow: #f59e0b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #0f1117 0%, #1a1d27 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .header-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  .stats-bar {
+    display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap;
+  }
+  .stat {
+    font-size: 12px; color: var(--text2);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .stat span { color: var(--text); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+  /* Chapter tabs */
+  .tabs {
+    display: flex; gap: 8px; padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 700;
+    cursor: pointer; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text2);
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tab:hover:not(.active) { border-color: var(--accent); color: var(--text); }
+
+  /* Main */
+  .main { padding: 20px 24px; max-width: 900px; margin: 0 auto; }
+
+  /* Chapter heading */
+  .chapter-heading {
+    font-size: 14px; font-weight: 700;
+    color: var(--accent2); letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 16px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+
+  /* Question card */
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+  .q-card:hover { border-color: #3e4470; }
+  .q-card.answered-correct { border-color: var(--correct); }
+  .q-card.answered-wrong { border-color: var(--wrong); }
+
+  .q-meta {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+  }
+  .q-num {
+    background: var(--accent); color: #fff;
+    font-size: 11px; font-weight: 900;
+    padding: 2px 8px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .q-stars { color: var(--yellow); font-size: 11px; }
+  .q-source { font-size: 11px; color: var(--text2); }
+
+  .q-text {
+    font-size: 15px; font-weight: 700; line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 14px; border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer; font-size: 14px; line-height: 1.5;
+    background: var(--surface2);
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .option:hover:not(.disabled) { border-color: var(--accent); background: #1e2540; }
+  .option.selected { border-color: var(--accent); background: rgba(79,127,255,0.1); }
+  .option.correct { border-color: var(--correct); background: rgba(34,197,94,0.1); color: #4ade80; }
+  .option.wrong { border-color: var(--wrong); background: rgba(239,68,68,0.1); color: #f87171; }
+  .option.show-correct { border-color: var(--correct); background: rgba(34,197,94,0.08); }
+  .option.disabled { cursor: default; }
+
+  .opt-label {
+    font-weight: 900; font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; min-width: 18px; margin-top: 1px;
+  }
+
+  /* Explanation */
+  .explanation {
+    display: none; margin-top: 14px;
+    background: var(--surface2); border-radius: 8px;
+    padding: 14px; border-left: 3px solid var(--accent2);
+    font-size: 13px; line-height: 1.7; color: var(--text2);
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--text); font-weight: 700; }
+  .explanation .answer-line {
+    font-size: 13px; font-weight: 700; margin-bottom: 8px;
+    color: var(--correct);
+  }
+  .explanation .wrong-line { color: var(--wrong); }
+
+  /* Reset button */
+  .reset-btn {
+    display: none; margin-top: 10px;
+    padding: 6px 14px; border-radius: 6px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text2); font-size: 12px; cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: all 0.15s;
+  }
+  .reset-btn.show { display: inline-block; }
+  .reset-btn:hover { border-color: var(--accent2); color: var(--text); }
+
+  /* Section hidden */
+  .chapter-section { display: none; }
+  .chapter-section.active { display: block; }
+
+  /* Formula */
+  .formula {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg); padding: 2px 6px; border-radius: 4px;
+    font-size: 12px; color: #a5f3fc;
+  }
+
+  /* Progress */
+  .progress-wrap { margin-bottom: 20px; }
+  .progress-bar-bg { background: var(--surface2); border-radius: 4px; height: 6px; overflow: hidden; }
+  .progress-bar { background: linear-gradient(90deg, var(--accent), var(--accent2)); height: 100%; border-radius: 4px; transition: width 0.3s; }
+  .progress-text { font-size: 12px; color: var(--text2); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+
+  /* Wrong-only review mode */
+  .review-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 24px; background: rgba(239,68,68,0.06);
+    border-bottom: 1px solid rgba(239,68,68,0.2);
+    flex-wrap: wrap;
+  }
+  .review-label {
+    font-size: 13px; font-weight: 700; color: var(--wrong);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .review-count { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text2); }
+  .review-btn {
+    padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    cursor: pointer; border: none; font-family: 'Noto Sans KR', sans-serif;
+    transition: all 0.2s;
+  }
+  .review-btn-start {
+    background: var(--wrong); color: #fff;
+  }
+  .review-btn-start:hover { background: #dc2626; }
+  .review-btn-start:disabled { opacity: 0.4; cursor: default; }
+  .review-btn-exit {
+    background: transparent; border: 1px solid var(--wrong) !important;
+    color: var(--wrong); border-radius: 20px; padding: 5px 14px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif; transition: all 0.2s;
+  }
+  .review-btn-exit:hover { background: rgba(239,68,68,0.1); }
+
+  /* Review mode active — overlay on chapter sections */
+  body.review-mode .chapter-section.active .q-card { display: none; }
+  body.review-mode .chapter-section.active .q-card.in-review { display: block; }
+  body.review-mode .chapter-section { pointer-events: auto; }
+
+  /* Review progress banner */
+  .review-progress-banner {
+    display: none;
+    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25);
+    border-radius: 10px; padding: 12px 16px; margin-bottom: 16px;
+    font-size: 13px; color: var(--text2);
+  }
+  .review-progress-banner.show { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .review-progress-banner strong { color: var(--wrong); }
+
+  /* Round badge on wrong cards */
+  .q-card.wrong-flag .q-num { background: var(--wrong); }
+
+  /* All-correct celebration */
+  .celebrate-banner {
+    display: none; text-align: center; padding: 28px 20px;
+    background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 12px; margin-bottom: 20px;
+    font-size: 15px; font-weight: 700; color: var(--correct);
+  }
+  .celebrate-banner.show { display: block; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⚡ 전력공학 기출문제</h1>
+  <div class="header-sub">단원별 자주 출제되는 기출문제 · 정답 및 해설 포함</div>
+  <div class="stats-bar">
+    <div class="stat">전체 <span id="total-count">74</span>문제</div>
+    <div class="stat">풀이 <span id="answered-count">0</span>문제</div>
+    <div class="stat">정답 <span id="correct-count">0</span>문제</div>
+    <div class="stat">정답률 <span id="accuracy">0</span>%</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showChapter('ch01')">CH01 전력계통 (17문제)</div>
+  <div class="tab" onclick="showChapter('ch02')">CH02 전선로 (57문제)</div>
+</div>
+
+<!-- Review control bar -->
+<div class="review-bar" id="review-bar">
+  <span class="review-label">🔴 오답 복습</span>
+  <span class="review-count">틀린 문제: <b id="wrong-count">0</b>개</span>
+  <button class="review-btn review-btn-start" id="btn-start-review" onclick="startReviewMode()" disabled>틀린 문제만 다시 풀기</button>
+  <span id="btn-exit-review" onclick="exitReviewMode()" style="display:none; padding:5px 14px; border-radius:20px; border:1px solid var(--wrong); color:var(--wrong); font-size:12px; font-weight:700; cursor:pointer;">✕ 복습 종료</span>
+  <span id="review-round-label" style="display:none; font-size:12px; color:var(--text2); font-family:'JetBrains Mono',monospace;"></span>
+</div>
+
+<div class="main">
+
+  <!-- ======================== CH01 전력계통 ======================== -->
+  <div class="chapter-section active" id="ch01">
+    <div class="chapter-heading">Chapter 01. 전력계통</div>
+    <div class="progress-wrap">
+      <div class="progress-bar-bg"><div class="progress-bar" id="prog-ch01" style="width:0%"></div></div>
+      <div class="progress-text" id="prog-text-ch01">0 / 17</div>
+    </div>
+
+    <!-- Q01 -->
+    <div class="q-card" id="qc-01">
+      <div class="q-meta">
+        <span class="q-num">01</span>
+        <span class="q-stars">★★★★</span>
+        <span class="q-source">산업 94년 2회, 96년 6회, 00년 3회, 04년 2회, 15년 1회, 17년 3회</span>
+      </div>
+      <div class="q-text">우리나라의 배전방식으로 가장 많이 사용되고 있는 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'01',1)"><span class="opt-label">①</span> 단상 2선식</div>
+        <div class="option" onclick="selectOption(this,'01',2)"><span class="opt-label">②</span> 3상 3선식</div>
+        <div class="option" onclick="selectOption(this,'01',3)"><span class="opt-label">③</span> 3상 4선식</div>
+        <div class="option" onclick="selectOption(this,'01',4)"><span class="opt-label">④</span> 2상 4선식</div>
+      </div>
+      <div class="explanation" id="exp-01">
+        <div class="answer-line">✓ 정답: ③ 3상 4선식</div>
+        우리나라에서는 <strong>3상 4선식</strong>을 대표적인 배전방식으로 사용한다.<br>
+        ㉠ 다른 배전방식에 비해 큰 전력을 공급할 수 있다.<br>
+        ㉡ 선로사고 시 사고검출이 용이하다.<br>
+        ㉢ 3상 부하 및 단상 부하에 동시전력을 공급할 수 있다.
+      </div>
+      <button class="reset-btn" id="rst-01" onclick="resetQuestion('01')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q02 -->
+    <div class="q-card" id="qc-02">
+      <div class="q-meta">
+        <span class="q-num">02</span>
+        <span class="q-stars">★★★</span>
+        <span class="q-source">산업 95년 4회, 99년 3회, 01년 2회</span>
+      </div>
+      <div class="q-text">변전소의 설치목적이 아닌 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'02',1)"><span class="opt-label">①</span> 경제적인 이유에서 전압을 승압 또는 강압한다.</div>
+        <div class="option" onclick="selectOption(this,'02',2)"><span class="opt-label">②</span> 발전전력은 집중연계한다.</div>
+        <div class="option" onclick="selectOption(this,'02',3)"><span class="opt-label">③</span> 수용가에 배분하고 정전을 최소화한다.</div>
+        <div class="option" onclick="selectOption(this,'02',4)"><span class="opt-label">④</span> 전력의 발생과 계통의 주파수를 변환시킨다.</div>
+      </div>
+      <div class="explanation" id="exp-02">
+        <div class="answer-line">✓ 정답: ④ 전력의 발생과 계통의 주파수를 변환시킨다.</div>
+        변전소는 전압을 승압 또는 강압하는 곳으로, 계통을 연계하고 조류를 제어한다.<br>
+        <strong>주파수 변환</strong>은 변전소의 설치목적이 아니다.
+      </div>
+      <button class="reset-btn" id="rst-02" onclick="resetQuestion('02')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q03 -->
+    <div class="q-card" id="qc-03">
+      <div class="q-meta">
+        <span class="q-num">03</span>
+        <span class="q-stars">★★</span>
+        <span class="q-source">기사 15년 1회, 산업 03년 1회, 14년 3회</span>
+      </div>
+      <div class="q-text">전력계통의 전압을 조정하는 가장 보편적인 방법은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'03',1)"><span class="opt-label">①</span> 발전기의 유효전력 조정</div>
+        <div class="option" onclick="selectOption(this,'03',2)"><span class="opt-label">②</span> 부하의 유효전력 조정</div>
+        <div class="option" onclick="selectOption(this,'03',3)"><span class="opt-label">③</span> 계통의 주파수 조정</div>
+        <div class="option" onclick="selectOption(this,'03',4)"><span class="opt-label">④</span> 계통의 무효전력 조정</div>
+      </div>
+      <div class="explanation" id="exp-03">
+        <div class="answer-line">✓ 정답: ④ 계통의 무효전력 조정</div>
+        조상설비를 이용하여 <strong>무효전력을 조정</strong>하여 전압을 조정한다.
+      </div>
+      <button class="reset-btn" id="rst-03" onclick="resetQuestion('03')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q04 -->
+    <div class="q-card" id="qc-04">
+      <div class="q-meta">
+        <span class="q-num">04</span>
+        <span class="q-stars">★</span>
+        <span class="q-source">기사 93년 4회</span>
+      </div>
+      <div class="q-text">전력계통의 전압조정과 무관한 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'04',1)"><span class="opt-label">①</span> 발전기의 조속기(governor)</div>
+        <div class="option" onclick="selectOption(this,'04',2)"><span class="opt-label">②</span> 발전기의 전압조정장치</div>
+        <div class="option" onclick="selectOption(this,'04',3)"><span class="opt-label">③</span> 전력용 콘덴서</div>
+        <div class="option" onclick="selectOption(this,'04',4)"><span class="opt-label">④</span> 분로 리액터(shunt reactor)</div>
+      </div>
+      <div class="explanation" id="exp-04">
+        <div class="answer-line">✓ 정답: ① 발전기의 조속기(governor)</div>
+        <strong>조속기(governor)</strong>는 부하변동에 따른 원동기의 회전속도를 일정하게 유지하기 위한 장치로, 전압조정과는 무관하다.<br>
+        전압조정 설비: 전력용 콘덴서, 분로 리액터, 발전기의 전압조정장치 등
+      </div>
+      <button class="reset-btn" id="rst-04" onclick="resetQuestion('04')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q05 -->
+    <div class="q-card" id="qc-05">
+      <div class="q-meta">
+        <span class="q-num">05</span>
+        <span class="q-stars">★★★★★</span>
+        <span class="q-source">기사 92년 3회, 11년 2회, 산업 05년 1회, 07년 2회, 12년 3회, 14년 1회</span>
+      </div>
+      <div class="q-text">전송전력이 400[MW], 송전거리가 200[km]인 경우의 경제적인 송전전압은 약 몇 [kV]인가? (단, Still의 식에 의하여 산정한다)</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'05',1)"><span class="opt-label">①</span> 57</div>
+        <div class="option" onclick="selectOption(this,'05',2)"><span class="opt-label">②</span> 173</div>
+        <div class="option" onclick="selectOption(this,'05',3)"><span class="opt-label">③</span> 353</div>
+        <div class="option" onclick="selectOption(this,'05',4)"><span class="opt-label">④</span> 645</div>
+      </div>
+      <div class="explanation" id="exp-05">
+        <div class="answer-line">✓ 정답: ③ 353[kV]</div>
+        <strong>Still의 경제적 송전전압 공식:</strong><br>
+        <span class="formula">E = 5.5√(0.6l + P/100) [kV]</span><br><br>
+        여기서 l: 송전거리[km], P: 송전전력[kW]<br><br>
+        E = 5.5√(0.6×200 + 400000/100)<br>
+        = 5.5√(120 + 4000)<br>
+        = 5.5√4120<br>
+        = 5.5 × 64.2 ≈ <strong>353[kV]</strong>
+      </div>
+      <button class="reset-btn" id="rst-05" onclick="resetQuestion('05')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q06 -->
+    <div class="q-card" id="qc-06">
+      <div class="q-meta">
+        <span class="q-num">06</span>
+        <span class="q-stars">★</span>
+        <span class="q-source">산업 03년 3회, 18년 2회</span>
+      </div>
+      <div class="q-text">우리나라에서 현재 사용되고 있는 송전전압에 해당되는 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'06',1)"><span class="opt-label">①</span> 150[kV]</div>
+        <div class="option" onclick="selectOption(this,'06',2)"><span class="opt-label">②</span> 220[kV]</div>
+        <div class="option" onclick="selectOption(this,'06',3)"><span class="opt-label">③</span> 345[kV]</div>
+        <div class="option" onclick="selectOption(this,'06',4)"><span class="opt-label">④</span> 500[kV]</div>
+      </div>
+      <div class="explanation" id="exp-06">
+        <div class="answer-line">✓ 정답: ③ 345[kV]</div>
+        우리나라 표준 송전전압: 22,000 / 66,000 / 154,000 / <strong>220,000 / 275,000 / 345,000 / 765,000[V]</strong><br>
+        보기 중 해당되는 것은 345[kV]이다.
+      </div>
+      <button class="reset-btn" id="rst-06" onclick="resetQuestion('06')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q07 -->
+    <div class="q-card" id="qc-07">
+      <div class="q-meta">
+        <span class="q-num">07</span>
+        <span class="q-stars">★★★</span>
+        <span class="q-source">산업 01년 1회, 14년 1회</span>
+      </div>
+      <div class="q-text">3상 송전선로의 공칭전압이란?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'07',1)"><span class="opt-label">①</span> 그 전선로를 대표하는 최고 전압</div>
+        <div class="option" onclick="selectOption(this,'07',2)"><span class="opt-label">②</span> 그 전선로를 대표하는 평균전압</div>
+        <div class="option" onclick="selectOption(this,'07',3)"><span class="opt-label">③</span> 그 전선로를 대표하는 선간전압</div>
+        <div class="option" onclick="selectOption(this,'07',4)"><span class="opt-label">④</span> 그 전선로를 대표하는 상전압</div>
+      </div>
+      <div class="explanation" id="exp-07">
+        <div class="answer-line">✓ 정답: ③ 그 전선로를 대표하는 선간전압</div>
+        공칭전압이란 KSC 0501에 의해 송전선로의 전압은 <strong>선간전압</strong>으로 표기한다.
+      </div>
+      <button class="reset-btn" id="rst-07" onclick="resetQuestion('07')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q08 -->
+    <div class="q-card" id="qc-08">
+      <div class="q-meta">
+        <span class="q-num">08</span>
+        <span class="q-stars">★★</span>
+        <span class="q-source">기사 95년 5회</span>
+      </div>
+      <div class="q-text">다음 중 우리나라에서 사용하는 공칭전압에서 22000/38000의 의미는?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'08',1)"><span class="opt-label">①</span> 접지전압/비접지전압</div>
+        <div class="option" onclick="selectOption(this,'08',2)"><span class="opt-label">②</span> 비접지전압/접지전압</div>
+        <div class="option" onclick="selectOption(this,'08',3)"><span class="opt-label">③</span> 선간전압/상전압</div>
+        <div class="option" onclick="selectOption(this,'08',4)"><span class="opt-label">④</span> 상전압/선간전압</div>
+      </div>
+      <div class="explanation" id="exp-08">
+        <div class="answer-line">✓ 정답: ④ 상전압/선간전압</div>
+        Y결선 기준으로: <strong>선간전압 = √3 × 상전압</strong><br>
+        22,000 × √3 = 38,000[V]<br>
+        따라서 22000은 상전압, 38000은 선간전압이다.
+      </div>
+      <button class="reset-btn" id="rst-08" onclick="resetQuestion('08')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q09 -->
+    <div class="q-card" id="qc-09">
+      <div class="q-meta">
+        <span class="q-num">09</span>
+        <span class="q-stars">★</span>
+        <span class="q-source">산업 92년 6회</span>
+      </div>
+      <div class="q-text">공칭전압은 그 선로를 대표하는 선간전압을 말하고, 최고 전압은 정상운전 시 선로에 발생하는 최고의 선간전압을 나타낸다. 다음 표에서 공칭전압에 대한 최고 전압이 옳은 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'09',1)"><span class="opt-label">①</span> 공칭전압 3.3/5.7 Y → 최고전압 3.5/6.0 Y</div>
+        <div class="option" onclick="selectOption(this,'09',2)"><span class="opt-label">②</span> 공칭전압 6.6/11.4 Y → 최고전압 6.9/11.9 Y</div>
+        <div class="option" onclick="selectOption(this,'09',3)"><span class="opt-label">③</span> 공칭전압 13.2/22.9 Y → 최고전압 13.5/25.8 Y</div>
+        <div class="option" onclick="selectOption(this,'09',4)"><span class="opt-label">④</span> 공칭전압 22/38 Y → 최고전압 25/45 Y</div>
+      </div>
+      <div class="explanation" id="exp-09">
+        <div class="answer-line">✓ 정답: ③ 13.2/22.9 Y → 13.5/25.8 Y</div>
+        공칭전압과 계통 최고 전압의 관계표:<br>
+        공칭전압 [kV]: 3.3, 6.6, 22.9, 66, 154, 345, 765<br>
+        최고 전압 [kV]: 3.6, 7.2, 25.8, 72.5, 170, 362, 800
+      </div>
+      <button class="reset-btn" id="rst-09" onclick="resetQuestion('09')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q10 -->
+    <div class="q-card" id="qc-10">
+      <div class="q-meta">
+        <span class="q-num">10</span>
+        <span class="q-stars">★★★</span>
+        <span class="q-source">기사 93년 2회, 01년 2회</span>
+      </div>
+      <div class="q-text">송전전압을 높일 때 발생하는 특성 중 옳지 않은 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'10',1)"><span class="opt-label">①</span> 송전전력과 전선의 단면적이 일정하면 선로의 전력손실이 감소한다.</div>
+        <div class="option" onclick="selectOption(this,'10',2)"><span class="opt-label">②</span> 절연애자의 갯수가 증가한다.</div>
+        <div class="option" onclick="selectOption(this,'10',3)"><span class="opt-label">③</span> 변전소에 시설할 기기의 값이 고가로 된다.</div>
+        <div class="option" onclick="selectOption(this,'10',4)"><span class="opt-label">④</span> 보수·유지에 필요한 비용이 적어진다.</div>
+      </div>
+      <div class="explanation" id="exp-10">
+        <div class="answer-line">✓ 정답: ④ 보수·유지에 필요한 비용이 적어진다.</div>
+        송전전압을 높이면 지지물이 높아져 건설비용이 증가하고 코로나 현상 등이 발생하여 선로 및 지지물의 <strong>유지·보수 관리비용이 높아진다</strong>.
+      </div>
+      <button class="reset-btn" id="rst-10" onclick="resetQuestion('10')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q11 -->
+    <div class="q-card" id="qc-11">
+      <div class="q-meta">
+        <span class="q-num">11</span>
+        <span class="q-stars">★★★★★</span>
+        <span class="q-source">기사 90년 6회, 96년 2회, 99년 6회, 11년 2회</span>
+      </div>
+      <div class="q-text">송전선로의 건설비와 전압과의 관계를 나타낸 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'11',1)"><span class="opt-label">①</span> 전압↑ → 전선비↓, 애자지지물비↑ (전선비가 더 가파르게 감소)</div>
+        <div class="option" onclick="selectOption(this,'11',2)"><span class="opt-label">②</span> 전압↑ → 전선비↑, 애자지지물비↑</div>
+        <div class="option" onclick="selectOption(this,'11',3)"><span class="opt-label">③</span> 전압↑ → 전선비↓, 애자지지물비↓</div>
+        <div class="option" onclick="selectOption(this,'11',4)"><span class="opt-label">④</span> 전압↑ → 전선비↓, 애자지지물비↑ (애자지지물비가 더 가파르게 증가)</div>
+      </div>
+      <div class="explanation" id="exp-11">
+        <div class="answer-line">✓ 정답: ① 전압↑ → 전선비↓(크게), 애자지지물비↑</div>
+        송전전압이 높아질수록:<br>
+        - <strong>전선비</strong>: 전압이 높으면 전류가 줄어 전선 굵기가 감소 → <strong>감소</strong><br>
+        - <strong>애자·지지물비</strong>: 절연레벨 증가, 지지물 높이 증가 → <strong>증가</strong><br>
+        그래프에서 전선비는 급격히 감소, 애자지지물비는 증가하는 형태(①번)
+      </div>
+      <button class="reset-btn" id="rst-11" onclick="resetQuestion('11')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q12 -->
+    <div class="q-card" id="qc-12">
+      <div class="q-meta">
+        <span class="q-num">12</span>
+        <span class="q-stars">★★★★★</span>
+        <span class="q-source">기사 96년 6회, 98년 4회, 99년 3·7회, 01년 2회, 17년 2회, 19년 2회(유사)</span>
+      </div>
+      <div class="q-text">교류송전방식에 비하여 직류송전방식의 장점에 해당되지 않는 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'12',1)"><span class="opt-label">①</span> 기기 및 선로의 절연에 필요한 비용이 절감된다.</div>
+        <div class="option" onclick="selectOption(this,'12',2)"><span class="opt-label">②</span> 안정도의 한계가 없으므로 송전용량을 전류용량의 한도까지 높일 수 있다.</div>
+        <div class="option" onclick="selectOption(this,'12',3)"><span class="opt-label">③</span> 1선 지락고장 시 인접통신선의 전자유도 장해가 작다.</div>
+        <div class="option" onclick="selectOption(this,'12',4)"><span class="opt-label">④</span> 고전압, 대전류의 차단이 용이하다.</div>
+      </div>
+      <div class="explanation" id="exp-12">
+        <div class="answer-line">✓ 정답: ④ 고전압, 대전류의 차단이 용이하다.</div>
+        직류송전방식(HVDC)의 장점:<br>
+        ㉠ 비동기연계가 가능하다.<br>
+        ㉡ 리액턴스가 없어서 역률을 1로 운전할 수 있고 안정도가 높다.<br>
+        ㉢ 절연비가 저감되고, 코로나에 유리하다.<br>
+        ㉣ 유전체손이나 연피손이 없다.<br>
+        ㉤ 고장전류가 작아 계통확장이 가능하다.<br>
+        <strong>고전압·대전류 차단은 직류가 교류보다 어렵다.</strong>
+      </div>
+      <button class="reset-btn" id="rst-12" onclick="resetQuestion('12')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q13 -->
+    <div class="q-card" id="qc-13">
+      <div class="q-meta">
+        <span class="q-num">13</span>
+        <span class="q-stars">★★★</span>
+        <span class="q-source">기사 94년 6회, 96년 4회, 13년 1회</span>
+      </div>
+      <div class="q-text">직류송전방식에 비하여 교류송전방식의 가장 큰 이점은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'13',1)"><span class="opt-label">①</span> 선로의 리액턴스에 의한 전압강하가 없으므로 장거리송전에 유리하다.</div>
+        <div class="option" onclick="selectOption(this,'13',2)"><span class="opt-label">②</span> 지중송전의 경우 충전전류와 유전체손을 고려하지 않아도 된다.</div>
+        <div class="option" onclick="selectOption(this,'13',3)"><span class="opt-label">③</span> 변압이 쉬워 고압 송전이 유리하다.</div>
+        <div class="option" onclick="selectOption(this,'13',4)"><span class="opt-label">④</span> 같은 절연에서 송전전력이 크게 된다.</div>
+      </div>
+      <div class="explanation" id="exp-13">
+        <div class="answer-line">✓ 정답: ③ 변압이 쉬워 고압 송전이 유리하다.</div>
+        교류송전방식의 장점:<br>
+        ㉠ 전압의 승압·강압이 용이하다.<br>
+        ㉡ 유도전동기에서 회전자계를 쉽게 얻을 수 있다.
+      </div>
+      <button class="reset-btn" id="rst-13" onclick="resetQuestion('13')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q14 -->
+    <div class="q-card" id="qc-14">
+      <div class="q-meta">
+        <span class="q-num">14</span>
+        <span class="q-stars">★★</span>
+        <span class="q-source">기사 01년 1회</span>
+      </div>
+      <div class="q-text">송전전압을 높일 경우에 생기는 문제점이 아닌 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'14',1)"><span class="opt-label">①</span> 전선 주위의 전위경도가 커지기 때문에 코로나손, 코로나 잡음이 발생한다.</div>
+        <div class="option" onclick="selectOption(this,'14',2)"><span class="opt-label">②</span> 변압기, 차단기 등의 절연 레벨이 높아지기 때문에 건설비가 많이 든다.</div>
+        <div class="option" onclick="selectOption(this,'14',3)"><span class="opt-label">③</span> 표준상태에서 공기의 절연이 파괴되는 전위경도는 직류에서 50[kV/cm]로 높아진다.</div>
+        <div class="option" onclick="selectOption(this,'14',4)"><span class="opt-label">④</span> 태풍, 뇌해, 염해 등에 대한 대책이 필요하다.</div>
+      </div>
+      <div class="explanation" id="exp-14">
+        <div class="answer-line">✓ 정답: ③ 표준상태에서 공기의 절연이 파괴되는 전위경도는 직류에서 50[kV/cm]로 높아진다.</div>
+        표준상태(20℃, 760mmHg)에서 공기는 직류 <strong>30[kV/cm]</strong>에서 절연파괴되므로, 정현파교류의 경우는 30/√2 = <strong>21.1[kV/cm]</strong>에서 절연이 파괴된다. 50[kV/cm]는 틀린 값이다.
+      </div>
+      <button class="reset-btn" id="rst-14" onclick="resetQuestion('14')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q15 -->
+    <div class="q-card" id="qc-15">
+      <div class="q-meta">
+        <span class="q-num">15</span>
+        <span class="q-stars">★</span>
+        <span class="q-source">기사 05년 3회, 산업 12년 2회</span>
+      </div>
+      <div class="q-text">송·배전 선로에 대한 다음 설명 중 틀린 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'15',1)"><span class="opt-label">①</span> 송·배전 선로는 저항, 인덕턴스, 정전용량, 누설 컨덕턴스라는 4개의 정수로 이루어진 연속된 전기회로이다.</div>
+        <div class="option" onclick="selectOption(this,'15',2)"><span class="opt-label">②</span> 송·배전 선로의 전압강하, 수전전력, 송전손실, 안정도 등을 계산하는 데 선로정수가 필요하다.</div>
+        <div class="option" onclick="selectOption(this,'15',3)"><span class="opt-label">③</span> 장거리 송전선로에 대해서 정밀한 계산을 할 경우에는 분포정수회로로 취급한다.</div>
+        <div class="option" onclick="selectOption(this,'15',4)"><span class="opt-label">④</span> 송·배전 선로의 선로정수는 원칙적으로 송전전압, 전류 또는 역률 등에 의해서 많이 받게 된다.</div>
+      </div>
+      <div class="explanation" id="exp-15">
+        <div class="answer-line">✓ 정답: ④ 송·배전 선로의 선로정수는 원칙적으로 송전전압, 전류 또는 역률 등에 의해서 많이 받게 된다.</div>
+        선로정수는 <strong>전선의 종류, 굵기, 배치</strong>에 따라 정해지고, 전압·전류·역률의 영향을 받지 않는다.
+      </div>
+      <button class="reset-btn" id="rst-15" onclick="resetQuestion('15')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q16 -->
+    <div class="q-card" id="qc-16">
+      <div class="q-meta">
+        <span class="q-num">16</span>
+        <span class="q-stars">★★★★</span>
+        <span class="q-source">기사 03년 1회, 12년 3회, 14년 1회, 16년 2회, 19년 2·3회</span>
+      </div>
+      <div class="q-text">각 전력계통을 연락선으로 상호연결하면 여러가지 장점이 있다. 옳지 않은 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'16',1)"><span class="opt-label">①</span> 각 전력계통의 신뢰도가 증가한다.</div>
+        <div class="option" onclick="selectOption(this,'16',2)"><span class="opt-label">②</span> 경제급전이 용이하다.</div>
+        <div class="option" onclick="selectOption(this,'16',3)"><span class="opt-label">③</span> 배후전력(back power)이 크기 때문에 고장이 적으며 영향의 범위가 작아진다.</div>
+        <div class="option" onclick="selectOption(this,'16',4)"><span class="opt-label">④</span> 주파수의 변화가 작아진다.</div>
+      </div>
+      <div class="explanation" id="exp-16">
+        <div class="answer-line">✓ 정답: ③ 배후전력(back power)이 크기 때문에 고장이 적으며 영향의 범위가 작아진다.</div>
+        연계(interconnecting system)의 단점:<br>
+        - 배후전력이 커서 <strong>고장전류가 많아 보호방식이 복잡</strong>해진다.<br>
+        - 많은 계통이 연결되어 있어 한번 고장이 발생하면 복구가 어렵다.<br>
+        - 복잡한 전압조정방식이 필요하다.
+      </div>
+      <button class="reset-btn" id="rst-16" onclick="resetQuestion('16')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q17 -->
+    <div class="q-card" id="qc-17">
+      <div class="q-meta">
+        <span class="q-num">17</span>
+        <span class="q-stars">★★</span>
+        <span class="q-source">기사 91년 7회, 95년 7회, 11년 1회, 16년 3회</span>
+      </div>
+      <div class="q-text">전자계산기에 의한 전력조류계산에서 슬랙(slack) 모선의 지정값은? (단, 슬랙 모선을 기준모선으로 한다)</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'17',1)"><span class="opt-label">①</span> 유효전력과 무효전력</div>
+        <div class="option" onclick="selectOption(this,'17',2)"><span class="opt-label">②</span> 전압크기와 유효전력</div>
+        <div class="option" onclick="selectOption(this,'17',3)"><span class="opt-label">③</span> 전압크기와 무효전력</div>
+        <div class="option" onclick="selectOption(this,'17',4)"><span class="opt-label">④</span> 전압크기와 위상차</div>
+      </div>
+      <div class="explanation" id="exp-17">
+        <div class="answer-line">✓ 정답: ④ 전압크기와 위상차</div>
+        슬랙(slack) 모선 = 스윙(swing) 모선은 유효전력과 전압의 크기를 지정하는 대신, <strong>전압의 크기와 그 위상각</strong>을 지정하는 모선이다.
+      </div>
+      <button class="reset-btn" id="rst-17" onclick="resetQuestion('17')">↺ 다시 풀기</button>
+    </div>
+
+  </div><!-- end ch01 -->
+
+
+  <!-- ======================== CH02 전선로 ======================== -->
+  <div class="chapter-section" id="ch02">
+    <div class="chapter-heading">Chapter 02. 전선로</div>
+    <div class="progress-wrap">
+      <div class="progress-bar-bg"><div class="progress-bar" id="prog-ch02" style="width:0%"></div></div>
+      <div class="progress-text" id="prog-text-ch02">0 / 57</div>
+    </div>
+
+    <!-- Q18 (CH02 Q01) -->
+    <div class="q-card" id="qc-18">
+      <div class="q-meta"><span class="q-num">01</span><span class="q-stars">★★★★</span><span class="q-source">기사 93년 3회, 01년 3회, 14년 2회</span></div>
+      <div class="q-text">가공전선에 사용되는 전선의 구비조건으로 틀린 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'18',1)"><span class="opt-label">①</span> 도전율이 높아야 한다.</div>
+        <div class="option" onclick="selectOption(this,'18',2)"><span class="opt-label">②</span> 기계적 강도가 커야 한다.</div>
+        <div class="option" onclick="selectOption(this,'18',3)"><span class="opt-label">③</span> 전압강하가 작아야 한다.</div>
+        <div class="option" onclick="selectOption(this,'18',4)"><span class="opt-label">④</span> 허용전류가 작아야 한다.</div>
+      </div>
+      <div class="explanation" id="exp-18">
+        <div class="answer-line">✓ 정답: ④ 허용전류가 작아야 한다.</div>
+        전선의 구비조건: 도전율이 높을 것, 기계적 강도가 클 것, 가요성·유연성이 클 것, 내구성이 있을 것, 비중이 작을 것, 가격이 저렴할 것, 공사·보수의 취급이 용이할 것<br>
+        <strong>허용전류는 클수록 좋다.</strong>
+      </div>
+      <button class="reset-btn" id="rst-18" onclick="resetQuestion('18')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q19 (CH02 Q02) -->
+    <div class="q-card" id="qc-19">
+      <div class="q-meta"><span class="q-num">02</span><span class="q-stars">★</span><span class="q-source">산업 93년 3회, 07년 4회</span></div>
+      <div class="q-text">송전선로의 연속사용 최고 허용온도는 몇 [℃]인가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'19',1)"><span class="opt-label">①</span> 90</div>
+        <div class="option" onclick="selectOption(this,'19',2)"><span class="opt-label">②</span> 120</div>
+        <div class="option" onclick="selectOption(this,'19',3)"><span class="opt-label">③</span> 150</div>
+        <div class="option" onclick="selectOption(this,'19',4)"><span class="opt-label">④</span> 200</div>
+      </div>
+      <div class="explanation" id="exp-19">
+        <div class="answer-line">✓ 정답: ① 90[℃]</div>
+        송전선의 경우 연속사용 최고 온도는 <strong>90[℃]</strong>이고 단시간 사용온도는 100[℃]이다.
+      </div>
+      <button class="reset-btn" id="rst-19" onclick="resetQuestion('19')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q20 -->
+    <div class="q-card" id="qc-20">
+      <div class="q-meta"><span class="q-num">03</span><span class="q-stars">★★</span><span class="q-source">산업 92년 5회</span></div>
+      <div class="q-text">인장강도는 작으나 도전율이 높아 옥내 배선용으로 주로 사용되는 전선은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'20',1)"><span class="opt-label">①</span> 규동선</div>
+        <div class="option" onclick="selectOption(this,'20',2)"><span class="opt-label">②</span> 연동선</div>
+        <div class="option" onclick="selectOption(this,'20',3)"><span class="opt-label">③</span> 경동선</div>
+        <div class="option" onclick="selectOption(this,'20',4)"><span class="opt-label">④</span> 동복강선</div>
+      </div>
+      <div class="explanation" id="exp-20">
+        <div class="answer-line">✓ 정답: ② 연동선</div>
+        <strong>연동선</strong>: 풍압에 대한 영향을 받지 않는 곳에 시설하는 전선으로 옥내 배선 및 접지선에 사용한다.<br>
+        저항률 ρ = 1/58 [Ω·mm²/m], 인장강도: 20~25[kg/mm²]
+      </div>
+      <button class="reset-btn" id="rst-20" onclick="resetQuestion('20')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q21 -->
+    <div class="q-card" id="qc-21">
+      <div class="q-meta"><span class="q-num">04</span><span class="q-stars">★★★★★</span><span class="q-source">기사 90년 2회, 96년 7회, 13년 3회, 16년 3회, 산업 16년 1회</span></div>
+      <div class="q-text">송전거리, 전력, 손실률 및 역률이 일정하다면 전선의 굵기는?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'21',1)"><span class="opt-label">①</span> 전류에 비례한다.</div>
+        <div class="option" onclick="selectOption(this,'21',2)"><span class="opt-label">②</span> 전압의 제곱에 비례한다.</div>
+        <div class="option" onclick="selectOption(this,'21',3)"><span class="opt-label">③</span> 전류에 역비례한다.</div>
+        <div class="option" onclick="selectOption(this,'21',4)"><span class="opt-label">④</span> 전압의 제곱에 역비례한다.</div>
+      </div>
+      <div class="explanation" id="exp-21">
+        <div class="answer-line">✓ 정답: ④ 전압의 제곱에 역비례한다.</div>
+        전력손실 <span class="formula">P_l = I²R = (P/Vcosθ)² × ρl/A</span><br>
+        전선의 단면적과 전압의 관계: <span class="formula">A ∝ 1/V²</span><br>
+        따라서 전선의 굵기는 <strong>전압의 제곱에 역비례</strong>한다.
+      </div>
+      <button class="reset-btn" id="rst-21" onclick="resetQuestion('21')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q22 -->
+    <div class="q-card" id="qc-22">
+      <div class="q-meta"><span class="q-num">05</span><span class="q-stars">★★★</span><span class="q-source">기사 97년 4회</span></div>
+      <div class="q-text">단상 2선식(110[V]) 저압 배전선로를 단상 3선식(110/220[V])으로 변경하고 부하용량 및 공급전압을 변경시키지 않고 부하를 평형시켰을 때의 전선로의 전압강하율은 변경 전에 비해서 어떻게 되는가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'22',1)"><span class="opt-label">①</span> 1/4 배</div>
+        <div class="option" onclick="selectOption(this,'22',2)"><span class="opt-label">②</span> 1/6 배</div>
+        <div class="option" onclick="selectOption(this,'22',3)"><span class="opt-label">③</span> 1/2 배</div>
+        <div class="option" onclick="selectOption(this,'22',4)"><span class="opt-label">④</span> 1/3 배</div>
+      </div>
+      <div class="explanation" id="exp-22">
+        <div class="answer-line">✓ 정답: ① 1/4 배</div>
+        전압강하율 ∝ 1/V²이므로 110[V]에서 220[V]로 승압 시 <strong>1/4배로 감소</strong>한다.
+      </div>
+      <button class="reset-btn" id="rst-22" onclick="resetQuestion('22')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q23 -->
+    <div class="q-card" id="qc-23">
+      <div class="q-meta"><span class="q-num">06</span><span class="q-stars">★★★★★</span><span class="q-source">기사 94년 4회, 98년 6회, 03년 3회, 17년 1회, 18년 3회, 19년 2회</span></div>
+      <div class="q-text">송·배전 선로의 전선굵기를 결정하는 데 고려하지 않아도 되는 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'23',1)"><span class="opt-label">①</span> 기계적강도</div>
+        <div class="option" onclick="selectOption(this,'23',2)"><span class="opt-label">②</span> 전압강하</div>
+        <div class="option" onclick="selectOption(this,'23',3)"><span class="opt-label">③</span> 허용전류</div>
+        <div class="option" onclick="selectOption(this,'23',4)"><span class="opt-label">④</span> 절연저항</div>
+      </div>
+      <div class="explanation" id="exp-23">
+        <div class="answer-line">✓ 정답: ④ 절연저항</div>
+        전선굵기 결정 시 고려사항: 허용전류, 전압강하, 기계적 강도<br>
+        가장 경제적인 전선의 굵기산정은 <strong>켈빈의 법칙</strong>을 이용한다.<br>
+        <strong>절연저항</strong>은 전선굵기 결정과 무관하다.
+      </div>
+      <button class="reset-btn" id="rst-23" onclick="resetQuestion('23')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q24 -->
+    <div class="q-card" id="qc-24">
+      <div class="q-meta"><span class="q-num">07</span><span class="q-stars">★</span><span class="q-source">기사 91년 2회, 95년 4회, 97년 2회, 99년 7회, 04년 4회</span></div>
+      <div class="q-text">100[V]의 수용가를 220[V]로 승압했을 때 특별히 교체하지 않아도 되는 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'24',1)"><span class="opt-label">①</span> 백열전등의 전구</div>
+        <div class="option" onclick="selectOption(this,'24',2)"><span class="opt-label">②</span> 옥내 배선의 전선</div>
+        <div class="option" onclick="selectOption(this,'24',3)"><span class="opt-label">③</span> 콘센트와 플러그</div>
+        <div class="option" onclick="selectOption(this,'24',4)"><span class="opt-label">④</span> 형광등의 안정기</div>
+      </div>
+      <div class="explanation" id="exp-24">
+        <div class="answer-line">✓ 정답: ② 옥내 배선의 전선</div>
+        부하증가 시 V=I·R에서 승압을 할 경우 전선을 교체하지 않아도 공급전류는 증가된다. 승압 시 부하설비 및 개폐장치의 경우 절연이 파괴될 우려가 있으므로 교체해야 한다.<br>
+        <strong>옥내 배선의 전선</strong>은 교체하지 않아도 된다.
+      </div>
+      <button class="reset-btn" id="rst-24" onclick="resetQuestion('24')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q25 -->
+    <div class="q-card" id="qc-25">
+      <div class="q-meta"><span class="q-num">08</span><span class="q-stars">★</span><span class="q-source">기사 91년 7회, 96년 5회</span></div>
+      <div class="q-text">단상식 배선에서 옥내 배선의 길이가 l[m], 부하전류 I[A]일 때 배선의 전압강하를 V[V]로 하기 위한 전선의 굵기는 다음 중 어느 요소에 비례하는가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'25',1)"><span class="opt-label">①</span> l√(V/I)</div>
+        <div class="option" onclick="selectOption(this,'25',2)"><span class="opt-label">②</span> √(lV/I)</div>
+        <div class="option" onclick="selectOption(this,'25',3)"><span class="opt-label">③</span> √(lVI)</div>
+        <div class="option" onclick="selectOption(this,'25',4)"><span class="opt-label">④</span> √(lI/V)</div>
+      </div>
+      <div class="explanation" id="exp-25">
+        <div class="answer-line">✓ 정답: ④ √(lI/V)</div>
+        단상 2선식의 전압강하 v = 2I·r = 2I×ρl/A [V]<br>
+        위의 식을 정리하면 전선의 굵기 A = 2Iρl/v = πd²/4<br>
+        전선의 굵기 <span class="formula">d = √(8Iρl/πv) = K√(lI/v)</span><br>
+        따라서 전선의 굵기는 <strong>√(lI/V)</strong>에 비례한다.
+      </div>
+      <button class="reset-btn" id="rst-25" onclick="resetQuestion('25')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q26 -->
+    <div class="q-card" id="qc-26">
+      <div class="q-meta"><span class="q-num">09</span><span class="q-stars">★★★★</span><span class="q-source">기사 14년 2회, 산업 93년 5회, 03년 1회</span></div>
+      <div class="q-text">ACSR은 동일한 길이에서 동일한 전기저항을 갖는 경동연선에 비하여 특징이 어떠한가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'26',1)"><span class="opt-label">①</span> 바깥지름과 중량이 모두 크다.</div>
+        <div class="option" onclick="selectOption(this,'26',2)"><span class="opt-label">②</span> 바깥지름은 크고 중량은 작다.</div>
+        <div class="option" onclick="selectOption(this,'26',3)"><span class="opt-label">③</span> 바깥지름은 작고 중량은 크다.</div>
+        <div class="option" onclick="selectOption(this,'26',4)"><span class="opt-label">④</span> 바깥지름과 중량이 모두 작다.</div>
+      </div>
+      <div class="explanation" id="exp-26">
+        <div class="answer-line">✓ 정답: ② 바깥지름은 크고 중량은 작다.</div>
+        강심 알루미늄 연선(ACSR)의 특징:<br>
+        ㉠ 경동선에 비해 저항률이 높아서 동일전력을 공급하기 위해서는 <strong>바깥지름이 더 커진다.</strong><br>
+        ㉡ 전선이 굵어져서 코로나 현상방지에 효과적이다.<br>
+        ㉢ <strong>중량이 작아</strong> 장거리 간 선로에 적합하고 온천지역에 적용된다.
+      </div>
+      <button class="reset-btn" id="rst-26" onclick="resetQuestion('26')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q27 -->
+    <div class="q-card" id="qc-27">
+      <div class="q-meta"><span class="q-num">10</span><span class="q-stars">★★</span><span class="q-source">산업 97년 7회, 05년 3회</span></div>
+      <div class="q-text">해안지방의 송전용 나전선으로 가장 적당한 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'27',1)"><span class="opt-label">①</span> 동선</div>
+        <div class="option" onclick="selectOption(this,'27',2)"><span class="opt-label">②</span> 강선</div>
+        <div class="option" onclick="selectOption(this,'27',3)"><span class="opt-label">③</span> 알루미늄 합금선</div>
+        <div class="option" onclick="selectOption(this,'27',4)"><span class="opt-label">④</span> 강심 알루미늄선</div>
+      </div>
+      <div class="explanation" id="exp-27">
+        <div class="answer-line">✓ 정답: ① 동선(구리선)</div>
+        해안의 염분은 알루미늄 및 강철을 부식시키므로 <strong>동선(구리선)</strong>을 사용하는 것이 적당하다. 반면에 온천지역의 경우 활성분으로 동(구리선)을 부식시킨다.<br>
+        해안 → 동선 사용, 온천 → 알루미늄 사용
+      </div>
+      <button class="reset-btn" id="rst-27" onclick="resetQuestion('27')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q28 -->
+    <div class="q-card" id="qc-28">
+      <div class="q-meta"><span class="q-num">11</span><span class="q-stars">★★★★★</span><span class="q-source">기사 11년 2회, 19년 1회, 산업 90년 7회, 97년 7회</span></div>
+      <div class="q-text">다음 중 켈빈(Kelvin)의 법칙이 적용되는 경우는?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'28',1)"><span class="opt-label">①</span> 전력손실량을 축소시킬 때</div>
+        <div class="option" onclick="selectOption(this,'28',2)"><span class="opt-label">②</span> 경제적인 전선의 굵기를 선정할 때</div>
+        <div class="option" onclick="selectOption(this,'28',3)"><span class="opt-label">③</span> 전압강하를 축소시킬 때</div>
+        <div class="option" onclick="selectOption(this,'28',4)"><span class="opt-label">④</span> 부하배분의 균형을 얻을 때</div>
+      </div>
+      <div class="explanation" id="exp-28">
+        <div class="answer-line">✓ 정답: ② 경제적인 전선의 굵기를 선정할 때</div>
+        <strong>켈빈의 법칙</strong>: 경제적인 전선의 굵기를 결정하는 방안으로, 전선비용은 건설비와 유지비를 같게 설계하였을 때 가장 경제적 투자가 된다.
+      </div>
+      <button class="reset-btn" id="rst-28" onclick="resetQuestion('28')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q29 -->
+    <div class="q-card" id="qc-29">
+      <div class="q-meta"><span class="q-num">12</span><span class="q-stars">★★★★</span><span class="q-source">산업 99년 6회, 03년 2회, 13년 3회</span></div>
+      <div class="q-text">전선의 중량은 전압과 역률과의 곱에 어떠한 관계에 있는가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'29',1)"><span class="opt-label">①</span> 비례</div>
+        <div class="option" onclick="selectOption(this,'29',2)"><span class="opt-label">②</span> 반비례</div>
+        <div class="option" onclick="selectOption(this,'29',3)"><span class="opt-label">③</span> 자승에 비례</div>
+        <div class="option" onclick="selectOption(this,'29',4)"><span class="opt-label">④</span> 자승에 반비례</div>
+      </div>
+      <div class="explanation" id="exp-29">
+        <div class="answer-line">✓ 정답: ④ 자승에 반비례</div>
+        전선의 단면적 <span class="formula">A ∝ 1/(V²cos²θ)</span><br>
+        전선의 중량 W = A·l·ρ이므로<br>
+        <span class="formula">W ∝ 1/(V²cos²θ)</span><br>
+        전선의 중량은 <strong>전압과 역률의 곱의 자승에 반비례</strong>한다.
+      </div>
+      <button class="reset-btn" id="rst-29" onclick="resetQuestion('29')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q30 -->
+    <div class="q-card" id="qc-30">
+      <div class="q-meta"><span class="q-num">13</span><span class="q-stars">★★★★★</span><span class="q-source">기사 17년 2회, 산업 91년 7회, 97년 5회, 06년 2회</span></div>
+      <div class="q-text">가공송전선로를 가선할 때에는 하중조건과 온도조건을 고려하여 적당한 이도(dip)를 주도록 하여야 한다. 다음 중 이도에 대한 설명으로 옳은 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'30',1)"><span class="opt-label">①</span> 이도가 작으면 전선이 좌우로 크게 흔들려서 다른 상의 전선에 접촉하여 위험하게 된다.</div>
+        <div class="option" onclick="selectOption(this,'30',2)"><span class="opt-label">②</span> 전선을 가선할 때 전선을 팽팽하게 가선하는 것을 이도를 크게 준다고 한다.</div>
+        <div class="option" onclick="selectOption(this,'30',3)"><span class="opt-label">③</span> 이도를 작게 하면 이에 비례하여 전선의 장력이 증가되며 심할 때는 전선 상호간이 꼬이게 된다.</div>
+        <div class="option" onclick="selectOption(this,'30',4)"><span class="opt-label">④</span> 이도의 대소는 지지물의 높이를 좌우한다.</div>
+      </div>
+      <div class="explanation" id="exp-30">
+        <div class="answer-line">✓ 정답: ④ 이도의 대소는 지지물의 높이를 좌우한다.</div>
+        이도가 선로에 미치는 영향:<br>
+        ㉠ 이도의 대소는 <strong>지지물의 높이를 결정</strong>한다.<br>
+        ㉡ 이도가 크면 전선은 좌우로 크게 진동해서 다른 상의 전선 또는 식물에 접촉해서 위험을 준다.<br>
+        ㉢ 이도가 너무 작으면 전선의 장력이 증가하여 단선사고가 발생할 수 있다.
+      </div>
+      <button class="reset-btn" id="rst-30" onclick="resetQuestion('30')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q31 빙설 지방 이도 계산 -->
+    <div class="q-card" id="qc-31">
+      <div class="q-meta"><span class="q-num">14</span><span class="q-stars">★★</span><span class="q-source">기사 00년 5회</span></div>
+      <div class="q-text">빙설이 많은 지방에서 특고압 가공전선의 이도(dip)를 계산할 때 전선 주위에 부착하는 빙설의 두께와 비중은 일반적인 경우 각각 얼마로 상정하는가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'31',1)"><span class="opt-label">①</span> 두께: 10[mm], 비중: 0.9</div>
+        <div class="option" onclick="selectOption(this,'31',2)"><span class="opt-label">②</span> 두께: 6[mm], 비중: 0.9</div>
+        <div class="option" onclick="selectOption(this,'31',3)"><span class="opt-label">③</span> 두께: 10[mm], 비중: 1.0</div>
+        <div class="option" onclick="selectOption(this,'31',4)"><span class="opt-label">④</span> 두께: 6[mm], 비중: 1.0</div>
+      </div>
+      <div class="explanation" id="exp-31">
+        <div class="answer-line">✓ 정답: ② 두께: 6[mm], 비중: 0.9</div>
+        <strong>빙설하중</strong>: 전선 주위에 두께 <strong>6[mm]</strong>, 비중 <strong>0.9</strong>의 빙설이 균일하게 부착된 상태에서의 하중을 말한다.
+      </div>
+      <button class="reset-btn" id="rst-31" onclick="resetQuestion('31')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q32 풍압하중 -->
+    <div class="q-card" id="qc-32">
+      <div class="q-meta"><span class="q-num">15</span><span class="q-stars">★</span><span class="q-source">산업 94년 4회, 13년 2회</span></div>
+      <div class="q-text">풍압이 p[kg/m²]이고 빙설이 많지 않은 지방에서 직경이 d[mm]인 전선 1[m]가 받는 풍압은 표면계수를 k라고 할 때 몇 [kg/m]가 되는가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'32',1)"><span class="opt-label">①</span> pk(d+12)/1000</div>
+        <div class="option" onclick="selectOption(this,'32',2)"><span class="opt-label">②</span> pk(d+6)/1000</div>
+        <div class="option" onclick="selectOption(this,'32',3)"><span class="opt-label">③</span> pkd/1000</div>
+        <div class="option" onclick="selectOption(this,'32',4)"><span class="opt-label">④</span> pkd²/1000</div>
+      </div>
+      <div class="explanation" id="exp-32">
+        <div class="answer-line">✓ 정답: ③ pkd/1000</div>
+        전선로와 직각방향으로 가해지는 하중:<br>
+        ㉠ 빙설이 적은 지역: <span class="formula">W_w = pkd/1000 [kg/m]</span><br>
+        ㉡ 빙설이 많은 지역: <span class="formula">W_w = pk(d+12)/1000 [kg/m]</span>
+      </div>
+      <button class="reset-btn" id="rst-32" onclick="resetQuestion('32')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q33 이도 공식 -->
+    <div class="q-card" id="qc-33">
+      <div class="q-meta"><span class="q-num">16</span><span class="q-stars">★★★★★</span><span class="q-source">산업 93년 4회, 00년 6회, 01년 3회, 15년 1회</span></div>
+      <div class="q-text">양 지지점의 높이가 같은 전선의 이도를 구하는 식은? (단, d: 이도[m], T: 수평장력[kg], W: 전선의 무게[kg/m], S: 경간[m])</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'33',1)"><span class="opt-label">①</span> d = WS²/8T</div>
+        <div class="option" onclick="selectOption(this,'33',2)"><span class="opt-label">②</span> d = SW²/8T</div>
+        <div class="option" onclick="selectOption(this,'33',3)"><span class="opt-label">③</span> d = 8WT/S²</div>
+        <div class="option" onclick="selectOption(this,'33',4)"><span class="opt-label">④</span> d = ST²/8W</div>
+      </div>
+      <div class="explanation" id="exp-33">
+        <div class="answer-line">✓ 정답: ① d = WS²/8T</div>
+        이도 공식: <span class="formula">d = WS²/8T [m]</span><br>
+        W: 단위길이당 전선의 중량[kg/m], S: 경간[m], T: 수평장력[kg]
+      </div>
+      <button class="reset-btn" id="rst-33" onclick="resetQuestion('33')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q34 합성하중 -->
+    <div class="q-card" id="qc-34">
+      <div class="q-meta"><span class="q-num">17</span><span class="q-stars">★★★★</span><span class="q-source">산업 94년 4회, 17년 3회</span></div>
+      <div class="q-text">전선의 자중과 빙설하중의 종합하중을 W₁, 풍압하중을 W₂라 할 때 합성하중은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'34',1)"><span class="opt-label">①</span> √(W₁²+W₂²)</div>
+        <div class="option" onclick="selectOption(this,'34',2)"><span class="opt-label">②</span> W₁+W₂</div>
+        <div class="option" onclick="selectOption(this,'34',3)"><span class="opt-label">③</span> W₁-W₂</div>
+        <div class="option" onclick="selectOption(this,'34',4)"><span class="opt-label">④</span> W₂-W₁</div>
+      </div>
+      <div class="explanation" id="exp-34">
+        <div class="answer-line">✓ 정답: ① √(W₁²+W₂²)</div>
+        전선의 하중 <span class="formula">W = √(W₁²+W₂²)</span><br>
+        W₁: 수직하중(자중+빙설하중), W₂: 수평하중(풍압하중)
+      </div>
+      <button class="reset-btn" id="rst-34" onclick="resetQuestion('34')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q35 가공전선 이도 - 단위 중량·경간 일정 -->
+    <div class="q-card" id="qc-35">
+      <div class="q-meta"><span class="q-num">18</span><span class="q-stars">★★★★</span><span class="q-source">산업 90년 2회, 97년 2회, 03년 2회</span></div>
+      <div class="q-text">가공전선로에서 전선의 단위길이당 중량과 경간이 일정할 때 이도는 어떻게 되는가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'35',1)"><span class="opt-label">①</span> 전선의 장력에 반비례한다.</div>
+        <div class="option" onclick="selectOption(this,'35',2)"><span class="opt-label">②</span> 전선의 장력에 비례한다.</div>
+        <div class="option" onclick="selectOption(this,'35',3)"><span class="opt-label">③</span> 전선의 장력의 2승에 반비례한다.</div>
+        <div class="option" onclick="selectOption(this,'35',4)"><span class="opt-label">④</span> 전선의 장력의 2승에 비례한다.</div>
+      </div>
+      <div class="explanation" id="exp-35">
+        <div class="answer-line">✓ 정답: ① 전선의 장력에 반비례한다.</div>
+        전선의 이도 <span class="formula">D = WS²/8T</span>이므로 경간이 일정할 때 전선의 이도는 <strong>장력(T)에 반비례</strong>한다.
+      </div>
+      <button class="reset-btn" id="rst-35" onclick="resetQuestion('35')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q36 경간 2배 수평장력 -->
+    <div class="q-card" id="qc-36">
+      <div class="q-meta"><span class="q-num">19</span><span class="q-stars">★★★</span><span class="q-source">산업 94년 3회, 00년 2회</span></div>
+      <div class="q-text">고저차가 없는 가공송전선로에서 이도 및 전선중량을 일정하게 하고 경간을 2배로 했을 때 전선의 수평장력은 몇 배가 되는가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'36',1)"><span class="opt-label">①</span> 2배</div>
+        <div class="option" onclick="selectOption(this,'36',2)"><span class="opt-label">②</span> 4배</div>
+        <div class="option" onclick="selectOption(this,'36',3)"><span class="opt-label">③</span> 1/2배</div>
+        <div class="option" onclick="selectOption(this,'36',4)"><span class="opt-label">④</span> 1/4배</div>
+      </div>
+      <div class="explanation" id="exp-36">
+        <div class="answer-line">✓ 정답: ② 4배</div>
+        이도 D = WS²/8T에서 수평장력 T = WS²/8D<br>
+        T ∝ S²이므로 경간(S)을 2배로 하면 수평장력(T)은 <strong>4배</strong>가 된다.
+      </div>
+      <button class="reset-btn" id="rst-36" onclick="resetQuestion('36')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q37 장력 2배 경간 2배 이도 -->
+    <div class="q-card" id="qc-37">
+      <div class="q-meta"><span class="q-num">20</span><span class="q-stars">★★</span><span class="q-source">기사 97년 2회</span></div>
+      <div class="q-text">송·배전 선로에서 전선의 장력을 2배로 하고 경간을 2배로 하면 전선의 이도는 몇 배가 되는가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'37',1)"><span class="opt-label">①</span> 1/4</div>
+        <div class="option" onclick="selectOption(this,'37',2)"><span class="opt-label">②</span> 1/2</div>
+        <div class="option" onclick="selectOption(this,'37',3)"><span class="opt-label">③</span> 2</div>
+        <div class="option" onclick="selectOption(this,'37',4)"><span class="opt-label">④</span> 4</div>
+      </div>
+      <div class="explanation" id="exp-37">
+        <div class="answer-line">✓ 정답: ③ 2배</div>
+        경간과 장력을 2배로 하면:<br>
+        <span class="formula">D' = W(2S)²/8×(2T) = 2 × WS²/8T = 2D</span><br>
+        이도는 <strong>2배</strong>가 된다.
+      </div>
+      <button class="reset-btn" id="rst-37" onclick="resetQuestion('37')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q38 지지점 높이 같은 경우 이도 D 새로운 -->
+    <div class="q-card" id="qc-38">
+      <div class="q-meta"><span class="q-num">21</span><span class="q-stars">★★★★</span><span class="q-source">기사 00년 3회, 산업 90년 7회, 97년 6회, 16년 2회</span></div>
+      <div class="q-text">그림과 같이 지지점 A, B, C에는 고저차가 없으며, 경간 AB와 BC 사이에 전선이 가설되어 그 이도가 12[cm]이었다고 한다. 지금 지지점 B에서 전선이 떨어져 전선의 이도가 D로 되었다면 D는 몇 [cm]가 되겠는가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'38',1)"><span class="opt-label">①</span> 10</div>
+        <div class="option" onclick="selectOption(this,'38',2)"><span class="opt-label">②</span> 24</div>
+        <div class="option" onclick="selectOption(this,'38',3)"><span class="opt-label">③</span> 30</div>
+        <div class="option" onclick="selectOption(this,'38',4)"><span class="opt-label">④</span> 36</div>
+      </div>
+      <div class="explanation" id="exp-38">
+        <div class="answer-line">✓ 정답: ② 24[cm]</div>
+        경간이 같고 전선의 지지점에 고저차가 없는 상태에서 전선이 떨어질 경우:<br>
+        <span class="formula">D = 2D₁ = 2×12 = 24[cm]</span>
+      </div>
+      <button class="reset-btn" id="rst-38" onclick="resetQuestion('38')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q39 수평장력 계산 -->
+    <div class="q-card" id="qc-39">
+      <div class="q-meta"><span class="q-num">22</span><span class="q-stars">★★★★</span><span class="q-source">산업 93년 3회, 07년 1회, 18년 1회</span></div>
+      <div class="q-text">전주 사이의 경간이 50[m]인 가공전선로에서 전선 1[m]되는 중량이 0.37[kg], 전선의 이도가 0.8[m]라면 전선의 수평장력은 몇 [kg]인가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'39',1)"><span class="opt-label">①</span> 80</div>
+        <div class="option" onclick="selectOption(this,'39',2)"><span class="opt-label">②</span> 120</div>
+        <div class="option" onclick="selectOption(this,'39',3)"><span class="opt-label">③</span> 145</div>
+        <div class="option" onclick="selectOption(this,'39',4)"><span class="opt-label">④</span> 165</div>
+      </div>
+      <div class="explanation" id="exp-39">
+        <div class="answer-line">✓ 정답: ③ 145[kg]</div>
+        수평장력 <span class="formula">T = WS²/8D = 0.37×50²/(8×0.8) = 925/6.4 = 144.5 ≈ 145[kg]</span>
+      </div>
+      <button class="reset-btn" id="rst-39" onclick="resetQuestion('39')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q40 온도변화 이도 -->
+    <div class="q-card" id="qc-40">
+      <div class="q-meta"><span class="q-num">23</span><span class="q-stars">★★</span><span class="q-source">기사 94년 3회, 95년 2회, 04년 2회</span></div>
+      <div class="q-text">온도가 t[℃] 상승했을 때의 이도는 약 몇 [m] 정도 되는가? (단, 온도변화 전의 이도를 D₁[m], 경간을 S[m], 전선의 온도계수를 α라 한다)</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'40',1)"><span class="opt-label">①</span> √(D₁ + (3/8)Sαt)</div>
+        <div class="option" onclick="selectOption(this,'40',2)"><span class="opt-label">②</span> √(D₁ + (8/3)Sα²t²)</div>
+        <div class="option" onclick="selectOption(this,'40',3)"><span class="opt-label">③</span> √(D₁² + (3/8)αtS²)</div>
+        <div class="option" onclick="selectOption(this,'40',4)"><span class="opt-label">④</span> √(D₁² + (8/3)S²α²t)</div>
+      </div>
+      <div class="explanation" id="exp-40">
+        <div class="answer-line">✓ 정답: ③ √(D₁² + (3/8)αtS²)</div>
+        t[℃] 상승 시 이도: <span class="formula">D_t = √(D₁² + (3/8)αtSL) ≈ √(D₁² + (3/8)αtS²)</span>
+      </div>
+      <button class="reset-btn" id="rst-40" onclick="resetQuestion('40')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q41 이도 계산 인장하중 주어질 때 -->
+    <div class="q-card" id="qc-41">
+      <div class="q-meta"><span class="q-num">24</span><span class="q-stars">★★★★★</span><span class="q-source">기사 14년 3회, 15년 2회, 산업 90년 2회, 97년 5회</span></div>
+      <div class="q-text">경간 200[m]의 가공전선로가 있다. 전선 1[m]당의 하중은 2.0[kg]이고 풍압하중이 없는 것으로 하면, 인장하중 4000[kg]의 전선을 사용할 때의 이도는 몇 [m]인가? (단, 안전율=2.0)</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'41',1)"><span class="opt-label">①</span> 5</div>
+        <div class="option" onclick="selectOption(this,'41',2)"><span class="opt-label">②</span> 5.4</div>
+        <div class="option" onclick="selectOption(this,'41',3)"><span class="opt-label">③</span> 6.4</div>
+        <div class="option" onclick="selectOption(this,'41',4)"><span class="opt-label">④</span> 7</div>
+      </div>
+      <div class="explanation" id="exp-41">
+        <div class="answer-line">✓ 정답: ① 5[m]</div>
+        수평장력 T = 인장하중/안전율 = 4000/2.0 = 2000[kg]<br>
+        이도 <span class="formula">D = WS²/8T = 2.0×200²/(8×2000) = 80000/16000 = 5[m]</span>
+      </div>
+      <button class="reset-btn" id="rst-41" onclick="resetQuestion('41')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q42 이도 계산 빙설 하중 포함 -->
+    <div class="q-card" id="qc-42">
+      <div class="q-meta"><span class="q-num">25</span><span class="q-stars">★★</span><span class="q-source">산업 13년 3회</span></div>
+      <div class="q-text">공칭단면적 200[mm²], 전선무게 1.838[kg/m], 전선의 외경 18.5[mm]인 경동연선을 경간 200[m]로 가설하는 경우 이도는 약 몇 [m]인가? (단, 경동연선의 전단인장하중=7910[kg], 빙설하중=0.416[kg/m], 풍압하중=1.525[kg/m], 안전율=2.0)</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'42',1)"><span class="opt-label">①</span> 3.44</div>
+        <div class="option" onclick="selectOption(this,'42',2)"><span class="opt-label">②</span> 3.78</div>
+        <div class="option" onclick="selectOption(this,'42',3)"><span class="opt-label">③</span> 4.28</div>
+        <div class="option" onclick="selectOption(this,'42',4)"><span class="opt-label">④</span> 4.78</div>
+      </div>
+      <div class="explanation" id="exp-42">
+        <div class="answer-line">✓ 정답: ① 3.44[m]</div>
+        합성하중 W = √((W_c+W_i)²+W_w²) = √((1.838+0.416)²+1.525²) = √(2.254²+1.525²) = √(5.081+2.326) = √7.407 ≈ 2.721[kg/m]<br>
+        수평장력 T = 7910/2 = 3955[kg]<br>
+        이도 D = WS²/8T = 2.721×200²/(8×3955) = 108840/31640 ≈ 3.44[m]
+      </div>
+      <button class="reset-btn" id="rst-42" onclick="resetQuestion('42')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q43 전선의 실제길이 공식 -->
+    <div class="q-card" id="qc-43">
+      <div class="q-meta"><span class="q-num">26</span><span class="q-stars">★★</span><span class="q-source">산업 94년 7회</span></div>
+      <div class="q-text">전선 양측의 지지점의 높이가 동일한 경우 전선의 단위길이당 중량을 W[kg], 수평장력을 T[kg], 경간을 S[m], 전선의 이도를 D[m]라 할 때 전선의 실제길이 L[m]을 계산하는 식은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'43',1)"><span class="opt-label">①</span> S + 8S²/3D</div>
+        <div class="option" onclick="selectOption(this,'43',2)"><span class="opt-label">②</span> S + 8D²/3S</div>
+        <div class="option" onclick="selectOption(this,'43',3)"><span class="opt-label">③</span> S + 3S²/8D</div>
+        <div class="option" onclick="selectOption(this,'43',4)"><span class="opt-label">④</span> S + 3D²/8S</div>
+      </div>
+      <div class="explanation" id="exp-43">
+        <div class="answer-line">✓ 정답: ② S + 8D²/3S</div>
+        전선의 실제길이: <span class="formula">L = S + 8D²/3S [m]</span><br>
+        여기서 S: 경간, D: 전선의 이도
+      </div>
+      <button class="reset-btn" id="rst-43" onclick="resetQuestion('43')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q44 실제길이 경간과 얼마나 더 긴가 -->
+    <div class="q-card" id="qc-44">
+      <div class="q-meta"><span class="q-num">27</span><span class="q-stars">★★★★</span><span class="q-source">기사 92년 2회, 05년 3회, 06년 1회, 산업 94년 2회, 04년 3회</span></div>
+      <div class="q-text">경간이 200[m]인 가공전선로가 있다. 사용전선의 길이는 경간보다 몇 [m] 길어야 하는가? (단, 전선의 1[m]당 하중은 2.0[kg], 인장하중은 4000[kg]이며, 풍압하중은 무시하고 전선의 안전율을 2라 한다)</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'44',1)"><span class="opt-label">①</span> 1/3</div>
+        <div class="option" onclick="selectOption(this,'44',2)"><span class="opt-label">②</span> 1/2</div>
+        <div class="option" onclick="selectOption(this,'44',3)"><span class="opt-label">③</span> √2</div>
+        <div class="option" onclick="selectOption(this,'44',4)"><span class="opt-label">④</span> √3</div>
+      </div>
+      <div class="explanation" id="exp-44">
+        <div class="answer-line">✓ 정답: ① 1/3 [m]</div>
+        이도 D = 5[m] (앞 문제와 동일 조건)<br>
+        전선의 경간보다 8D²/3S 만큼 더 길어지므로:<br>
+        <span class="formula">8D²/3S = 8×5²/(3×200) = 200/600 = 1/3[m]</span>
+      </div>
+      <button class="reset-btn" id="rst-44" onclick="resetQuestion('44')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q45 ACSR 실제길이 계산 -->
+    <div class="q-card" id="qc-45">
+      <div class="q-meta"><span class="q-num">28</span><span class="q-stars">★★★★</span><span class="q-source">산업 90년 6회, 95년 7회, 97년 7회, 00년 4회</span></div>
+      <div class="q-text">단면적 330[mm²]의 강심 알루미늄을 경간이 300[m]이고 지지점의 높이가 같은 철탑 사이에 가설하였다. 전선의 이도가 7.4[m]이면 전선의 실제길이는 몇 [m]인가? (단, 풍압, 온도 등의 영향은 무시한다)</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'45',1)"><span class="opt-label">①</span> 300.282</div>
+        <div class="option" onclick="selectOption(this,'45',2)"><span class="opt-label">②</span> 300.487</div>
+        <div class="option" onclick="selectOption(this,'45',3)"><span class="opt-label">③</span> 300.685</div>
+        <div class="option" onclick="selectOption(this,'45',4)"><span class="opt-label">④</span> 300.875</div>
+      </div>
+      <div class="explanation" id="exp-45">
+        <div class="answer-line">✓ 정답: ② 300.487[m]</div>
+        <span class="formula">L = S + 8D²/3S = 300 + 8×7.4²/(3×300) = 300 + 437.84/900 = 300 + 0.487 = 300.487[m]</span>
+      </div>
+      <button class="reset-btn" id="rst-45" onclick="resetQuestion('45')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q46 전선의 고유진동주파수 -->
+    <div class="q-card" id="qc-46">
+      <div class="q-meta"><span class="q-num">29</span><span class="q-stars">★</span><span class="q-source">기사 97년 5회</span></div>
+      <div class="q-text">전선진동의 루프 길이를 l[m], 전선장력을 T[kg], 전선의 중량을 W[kg/m], 중력가속도를 g[m/sec²]라 할 때 전선의 고유진동주파수는 몇 [Hz]인가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'46',1)"><span class="opt-label">①</span> (1/2l)√(Tg/W)</div>
+        <div class="option" onclick="selectOption(this,'46',2)"><span class="opt-label">②</span> (1/2T)√(gl/W)</div>
+        <div class="option" onclick="selectOption(this,'46',3)"><span class="opt-label">③</span> (1/2g)√(Tl/W)</div>
+        <div class="option" onclick="selectOption(this,'46',4)"><span class="opt-label">④</span> (1/2W)√(Tg/l)</div>
+      </div>
+      <div class="explanation" id="exp-46">
+        <div class="answer-line">✓ 정답: ① (1/2l)√(Tg/W)</div>
+        전선의 고유진동수: <span class="formula">f_n = (1/2l)√(T·g/W) [Hz]</span><br>
+        l: 선로길이[m], T: 전선장력[kg], W: 전선중량[kg/m], g: 중력가속도
+      </div>
+      <button class="reset-btn" id="rst-46" onclick="resetQuestion('46')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q47 전선의 지지점 높이와 평균높이 -->
+    <div class="q-card" id="qc-47">
+      <div class="q-meta"><span class="q-num">30</span><span class="q-stars">★★</span><span class="q-source">기사 14년 3회, 산업 92년 5회, 99년 7회, 18년 3회</span></div>
+      <div class="q-text">전선의 지지점높이가 31[m]이고, 전선의 이도가 9[m]라면 전선의 평균높이[m]는 몇 [m]가 적당한가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'47',1)"><span class="opt-label">①</span> 25</div>
+        <div class="option" onclick="selectOption(this,'47',2)"><span class="opt-label">②</span> 26.5</div>
+        <div class="option" onclick="selectOption(this,'47',3)"><span class="opt-label">③</span> 28.5</div>
+        <div class="option" onclick="selectOption(this,'47',4)"><span class="opt-label">④</span> 30</div>
+      </div>
+      <div class="explanation" id="exp-47">
+        <div class="answer-line">✓ 정답: ① 25[m]</div>
+        전선의 평균높이: <span class="formula">h_m = h - (2/3)D = 31 - (2/3)×9 = 31 - 6 = 25[m]</span>
+      </div>
+      <button class="reset-btn" id="rst-47" onclick="resetQuestion('47')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q48 댐퍼 설치목적 -->
+    <div class="q-card" id="qc-48">
+      <div class="q-meta"><span class="q-num">31</span><span class="q-stars">★★★★★</span><span class="q-source">기사 14년 1회, 18년 2회, 산업 97년 5회, 11년 3회, 16년 3회</span></div>
+      <div class="q-text">전선로에 댐퍼(damper)를 사용하는 목적은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'48',1)"><span class="opt-label">①</span> 전선의 진동방지</div>
+        <div class="option" onclick="selectOption(this,'48',2)"><span class="opt-label">②</span> 전력손실 경감</div>
+        <div class="option" onclick="selectOption(this,'48',3)"><span class="opt-label">③</span> 낙뢰의 내습방지</div>
+        <div class="option" onclick="selectOption(this,'48',4)"><span class="opt-label">④</span> 많은 전력을 보내기 위하여</div>
+      </div>
+      <div class="explanation" id="exp-48">
+        <div class="answer-line">✓ 정답: ① 전선의 진동방지</div>
+        <strong>댐퍼(damper)</strong>는 진동이 발생하기 쉬운 개소에 설치하여 전선의 진동을 방지시켜 단선사고를 방지한다.<br>
+        댐퍼는 350[m] 이내는 1개, 650[m] 구간에는 2개, 그 이상은 3개 이상을 설치한다.
+      </div>
+      <button class="reset-btn" id="rst-48" onclick="resetQuestion('48')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q49 애자 열화원인 -->
+    <div class="q-card" id="qc-49">
+      <div class="q-meta"><span class="q-num">32</span><span class="q-stars">★★★</span><span class="q-source">기사 91년 6회, 00년 3회, 04년 3회, 13년 3회</span></div>
+      <div class="q-text">송전선로에 사용되는 애자의 특성이 나빠지는 원인으로 볼 수 없는 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'49',1)"><span class="opt-label">①</span> 애자 각 부분의 열팽창의 상이</div>
+        <div class="option" onclick="selectOption(this,'49',2)"><span class="opt-label">②</span> 전선 상호간의 유도장해</div>
+        <div class="option" onclick="selectOption(this,'49',3)"><span class="opt-label">③</span> 누설전류에 의한 편열</div>
+        <div class="option" onclick="selectOption(this,'49',4)"><span class="opt-label">④</span> 시멘트의 화학팽창 및 동결팽창</div>
+      </div>
+      <div class="explanation" id="exp-49">
+        <div class="answer-line">✓ 정답: ② 전선 상호간의 유도장해</div>
+        애자의 열화원인: 애자제조의 결함, 온도의 영향, 시멘트의 화학팽창, 전기적 스트레스와 코로나에 의한 영향<br>
+        <strong>전선 상호간의 유도장해</strong>는 애자 열화원인이 아니다.
+      </div>
+      <button class="reset-btn" id="rst-49" onclick="resetQuestion('49')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q50 현수애자 특성 -->
+    <div class="q-card" id="qc-50">
+      <div class="q-meta"><span class="q-num">33</span><span class="q-stars">★★★</span><span class="q-source">기사 92년 3회, 95년 7회, 98년 7회, 17년 3회</span></div>
+      <div class="q-text">현수애자에 대한 설명이 아닌 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'50',1)"><span class="opt-label">①</span> 애자를 연결하는 방법에 따라 클래비스형과 볼소켓형이 있다.</div>
+        <div class="option" onclick="selectOption(this,'50',2)"><span class="opt-label">②</span> 2~4층의 갓모양의 자기편을 시멘트로 접착하고 그 자기를 주철제 base로 지지한다.</div>
+        <div class="option" onclick="selectOption(this,'50',3)"><span class="opt-label">③</span> 애자의 연결개수를 가감함으로써 임의의 송전전압에 사용할 수 있다.</div>
+        <div class="option" onclick="selectOption(this,'50',4)"><span class="opt-label">④</span> 큰 하중에 대하여는 2연 또는 3연으로 하여 사용할 수 있다.</div>
+      </div>
+      <div class="explanation" id="exp-50">
+        <div class="answer-line">✓ 정답: ② 2~4층의 갓모양의 자기편을 시멘트로 접착하고 그 자기를 주철제 base로 지지한다.</div>
+        현수애자 특성: 애자의 연결개수를 가감함으로써 임의의 송전전압에 사용할 수 있다. 큰 하중에 대해서는 2연 또는 3연으로 하여 사용할 수 있다. 접속하는 방법에 따라 클래비스형과 볼소켓형으로 나눌 수 있다.<br>
+        ②번은 핀애자에 대한 설명이다.
+      </div>
+      <button class="reset-btn" id="rst-50" onclick="resetQuestion('50')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q51 현수애자 표준 크기 -->
+    <div class="q-card" id="qc-51">
+      <div class="q-meta"><span class="q-num">34</span><span class="q-stars">★★</span><span class="q-source">산업 93년 4회, 98년 5회, 02년 3회</span></div>
+      <div class="q-text">우리나라에서 가장 많이 사용하는 현수애자의 표준은 몇 [mm]인가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'51',1)"><span class="opt-label">①</span> 160</div>
+        <div class="option" onclick="selectOption(this,'51',2)"><span class="opt-label">②</span> 250</div>
+        <div class="option" onclick="selectOption(this,'51',3)"><span class="opt-label">③</span> 280</div>
+        <div class="option" onclick="selectOption(this,'51',4)"><span class="opt-label">④</span> 320</div>
+      </div>
+      <div class="explanation" id="exp-51">
+        <div class="answer-line">✓ 정답: ② 250[mm]</div>
+        우리나라에서는 <strong>254[mm]</strong>가 가장 많이 사용되고 있다. 통상 <strong>250[mm]</strong>로 적용한다.
+      </div>
+      <button class="reset-btn" id="rst-51" onclick="resetQuestion('51')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q52 250mm 현수애자 전기특성 -->
+    <div class="q-card" id="qc-52">
+      <div class="q-meta"><span class="q-num">35</span><span class="q-stars">★★★</span><span class="q-source">산업 97년 4회, 04년 3회</span></div>
+      <div class="q-text">250[mm] 현수애자 1개의 건조섬락전압은 몇 [kV] 정도인가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'52',1)"><span class="opt-label">①</span> 50</div>
+        <div class="option" onclick="selectOption(this,'52',2)"><span class="opt-label">②</span> 60</div>
+        <div class="option" onclick="selectOption(this,'52',3)"><span class="opt-label">③</span> 80</div>
+        <div class="option" onclick="selectOption(this,'52',4)"><span class="opt-label">④</span> 100</div>
+      </div>
+      <div class="explanation" id="exp-52">
+        <div class="answer-line">✓ 정답: ③ 80[kV]</div>
+        250[mm] 현수애자의 전기적 특성:<br>
+        건조섬락전압: <strong>80[kV]</strong>, 주수섬락전압: 50[kV],<br>
+        유중파괴전압: 140[kV], 충격섬락전압: 125[kV]
+      </div>
+      <button class="reset-btn" id="rst-52" onclick="resetQuestion('52')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q53 애자 전기특성 최고 전압 -->
+    <div class="q-card" id="qc-53">
+      <div class="q-meta"><span class="q-num">36</span><span class="q-stars">★★★</span><span class="q-source">기사 95년 2회</span></div>
+      <div class="q-text">애자의 전기적 특성에서 가장 높은 전압은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'53',1)"><span class="opt-label">①</span> 건조섬락전압</div>
+        <div class="option" onclick="selectOption(this,'53',2)"><span class="opt-label">②</span> 주수섬락전압</div>
+        <div class="option" onclick="selectOption(this,'53',3)"><span class="opt-label">③</span> 충격섬락전압</div>
+        <div class="option" onclick="selectOption(this,'53',4)"><span class="opt-label">④</span> 유중파괴전압</div>
+      </div>
+      <div class="explanation" id="exp-53">
+        <div class="answer-line">✓ 정답: ④ 유중파괴전압</div>
+        254[mm] 현수애자: 건조섬락 80[kV], 주수섬락 50[kV], 충격섬락 125[kV], <strong>유중파괴 140[kV]</strong><br>
+        유중파괴전압이 가장 높다.
+      </div>
+      <button class="reset-btn" id="rst-53" onclick="resetQuestion('53')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q54 연면섬락과 관계가 가장 작은 것 -->
+    <div class="q-card" id="qc-54">
+      <div class="q-meta"><span class="q-num">37</span><span class="q-stars">★★</span><span class="q-source">기사 92년 3회, 16년 2회</span></div>
+      <div class="q-text">송전선 현수애자련의 연면섬락과 관계가 가장 작은 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'54',1)"><span class="opt-label">①</span> 철탑 접지저항</div>
+        <div class="option" onclick="selectOption(this,'54',2)"><span class="opt-label">②</span> 현수애자의 개수</div>
+        <div class="option" onclick="selectOption(this,'54',3)"><span class="opt-label">③</span> 현수애자련의 오손</div>
+        <div class="option" onclick="selectOption(this,'54',4)"><span class="opt-label">④</span> 가공지선</div>
+      </div>
+      <div class="explanation" id="exp-54">
+        <div class="answer-line">✓ 정답: ④ 가공지선</div>
+        연면섬락: 초고압 송전선로에서 애자련의 표면에 전류가 흘러 생기는 섬락이다.<br>
+        연면섬락의 방지책: 철탑의 접지저항을 작게 한다, 현수애자개수를 늘려 애자련을 길게 한다.<br>
+        <strong>가공지선</strong>은 연면섬락과 직접적인 관계가 없다.
+      </div>
+      <button class="reset-btn" id="rst-54" onclick="resetQuestion('54')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q55 345kV 현수애자 개수 -->
+    <div class="q-card" id="qc-55">
+      <div class="q-meta"><span class="q-num">38</span><span class="q-stars">★★★★</span><span class="q-source">산업 93년 1회, 01년 3회, 16년 1회</span></div>
+      <div class="q-text">345[kV] 초고압 송전선로에 사용되는 현수애자는 1연 현수인 경우 대략 몇 개 정도 사용되는가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'55',1)"><span class="opt-label">①</span> 6~8</div>
+        <div class="option" onclick="selectOption(this,'55',2)"><span class="opt-label">②</span> 12~14</div>
+        <div class="option" onclick="selectOption(this,'55',3)"><span class="opt-label">③</span> 18~20</div>
+        <div class="option" onclick="selectOption(this,'55',4)"><span class="opt-label">④</span> 28~38</div>
+      </div>
+      <div class="explanation" id="exp-55">
+        <div class="answer-line">✓ 정답: ③ 18~20개</div>
+        송전전압 345[kV]의 경우 현수애자 1연의 애자개수는 <strong>18~23개</strong>를 설치한다.
+      </div>
+      <button class="reset-btn" id="rst-55" onclick="resetQuestion('55')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q56 4개 1줄 표준현수애자 송전전압 -->
+    <div class="q-card" id="qc-56">
+      <div class="q-meta"><span class="q-num">39</span><span class="q-stars">★★★</span><span class="q-source">산업 90년 6회, 12년 2회</span></div>
+      <div class="q-text">4개를 한 줄로 이어 단 표준현수애자를 사용하는 송전전압에 해당되는 것은? (단, 애자는 250[mm] 현수애자임)</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'56',1)"><span class="opt-label">①</span> 22[kV]</div>
+        <div class="option" onclick="selectOption(this,'56',2)"><span class="opt-label">②</span> 66[kV]</div>
+        <div class="option" onclick="selectOption(this,'56',3)"><span class="opt-label">③</span> 154[kV]</div>
+        <div class="option" onclick="selectOption(this,'56',4)"><span class="opt-label">④</span> 345[kV]</div>
+      </div>
+      <div class="explanation" id="exp-56">
+        <div class="answer-line">✓ 정답: ② 66[kV]</div>
+        송전전압에 따른 1연의 애자개수:<br>
+        22[kV]: 2~3개, <strong>66[kV]: 4~5개</strong>, 154[kV]: 9~11개, 345[kV]: 18~23개
+      </div>
+      <button class="reset-btn" id="rst-56" onclick="resetQuestion('56')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q57 전압부담이 가장 큰 애자 -->
+    <div class="q-card" id="qc-57">
+      <div class="q-meta"><span class="q-num">40</span><span class="q-stars">★★★★★</span><span class="q-source">기사 00년 3회, 05년 1회, 14년 1회, 산업 95년 2회, 14년 2회, 18년 1회</span></div>
+      <div class="q-text">다음 중 가공송전선에 사용하는 애자련 중 전압부담이 가장 큰 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'57',1)"><span class="opt-label">①</span> 철탑에 가장 가까운 애자</div>
+        <div class="option" onclick="selectOption(this,'57',2)"><span class="opt-label">②</span> 전선에 가장 가까운 애자</div>
+        <div class="option" onclick="selectOption(this,'57',3)"><span class="opt-label">③</span> 중앙에 있는 애자</div>
+        <div class="option" onclick="selectOption(this,'57',4)"><span class="opt-label">④</span> 철탑과 애자련 중앙의 그 중간에 있는 애자</div>
+      </div>
+      <div class="explanation" id="exp-57">
+        <div class="answer-line">✓ 정답: ② 전선에 가장 가까운 애자</div>
+        송전선로에서 현수애자의 전압부담은 전선에서 가까이 있는 것부터 1번째 애자 22[%], 2번째 17[%], 3번째 12[%], 4번째 10[%], 그리고 8번째 애자가 약 6[%], 마지막 애자가 8[%] 정도의 전압을 부담한다.<br>
+        따라서 <strong>전선에 가장 가까운 애자</strong>가 전압부담이 가장 크다.
+      </div>
+      <button class="reset-btn" id="rst-57" onclick="resetQuestion('57')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q58 현수애자 연효율 -->
+    <div class="q-card" id="qc-58">
+      <div class="q-meta"><span class="q-num">41</span><span class="q-stars">★★★★</span><span class="q-source">산업 91년 2회, 95년 7회, 99년 7회</span></div>
+      <div class="q-text">현수애자의 연효율(string efficiency) η[%]는? (단, V₁: 현수애자 1개의 섬락전압, n: 1련의 사용애자수, Vn: 애자련의 섬락전압)</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'58',1)"><span class="opt-label">①</span> η = Vn/(nV₁) × 100[%]</div>
+        <div class="option" onclick="selectOption(this,'58',2)"><span class="opt-label">②</span> η = nV₁/Vn × 100[%]</div>
+        <div class="option" onclick="selectOption(this,'58',3)"><span class="opt-label">③</span> η = nVn/V₁ × 100[%]</div>
+        <div class="option" onclick="selectOption(this,'58',4)"><span class="opt-label">④</span> η = V₁/(nVn) × 100[%]</div>
+      </div>
+      <div class="explanation" id="exp-58">
+        <div class="answer-line">✓ 정답: ① η = Vn/(nV₁) × 100[%]</div>
+        연효율(연능률): 애자련에 가해지는 섬락전압과 각 애자의 섬락전압을 애자련의 개수배한 전압의 비율이다.<br>
+        <span class="formula">η = 애자련의 섬락전압(Vn) / (1연의 애자개수(n)×애자 1개의 섬락전압(V₁)) × 100[%]</span>
+      </div>
+      <button class="reset-btn" id="rst-58" onclick="resetQuestion('58')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q59 연효율 계산 -->
+    <div class="q-card" id="qc-59">
+      <div class="q-meta"><span class="q-num">42</span><span class="q-stars">★★★</span><span class="q-source">기사 05년 3회, 산업 93년 2회, 04년 1회</span></div>
+      <div class="q-text">250[mm] 현수애자 10개를 직렬로 접속한 애자련의 건조섬락전압이 590[kV]이고, 연효율은 0.74이다. 현수애자 1개의 건조섬락전압은 약 몇 [kV]인가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'59',1)"><span class="opt-label">①</span> 80</div>
+        <div class="option" onclick="selectOption(this,'59',2)"><span class="opt-label">②</span> 90</div>
+        <div class="option" onclick="selectOption(this,'59',3)"><span class="opt-label">③</span> 100</div>
+        <div class="option" onclick="selectOption(this,'59',4)"><span class="opt-label">④</span> 120</div>
+      </div>
+      <div class="explanation" id="exp-59">
+        <div class="answer-line">✓ 정답: ① 80[kV]</div>
+        연효율 η = Vn/(nV₁) = 590/(10×V₁) = 0.74<br>
+        V₁ = 590/(10×0.74) = 590/7.4 = <strong>80[kV]</strong>
+      </div>
+      <button class="reset-btn" id="rst-59" onclick="resetQuestion('59')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q60 표준형 철탑 아닌 것 -->
+    <div class="q-card" id="qc-60">
+      <div class="q-meta"><span class="q-num">43</span><span class="q-stars">★</span><span class="q-source">산업 17년 2회</span></div>
+      <div class="q-text">다음 중 표준형 철탑이 아닌 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'60',1)"><span class="opt-label">①</span> 내선철탑</div>
+        <div class="option" onclick="selectOption(this,'60',2)"><span class="opt-label">②</span> 직선철탑</div>
+        <div class="option" onclick="selectOption(this,'60',3)"><span class="opt-label">③</span> 각도철탑</div>
+        <div class="option" onclick="selectOption(this,'60',4)"><span class="opt-label">④</span> 인류철탑</div>
+      </div>
+      <div class="explanation" id="exp-60">
+        <div class="answer-line">✓ 정답: ① 내선철탑</div>
+        사용목적에 따른 철탑의 종류: 직선철탑(A,F,SF형), 각도철탑(B형), 인류철탑(D형), 내장철탑(C,E형), 보강형 철탑<br>
+        <strong>내선철탑</strong>은 표준형 철탑이 아니다.
+      </div>
+      <button class="reset-btn" id="rst-60" onclick="resetQuestion('60')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q61 표준 철탑설계 가장 큰 하중 -->
+    <div class="q-card" id="qc-61">
+      <div class="q-meta"><span class="q-num">44</span><span class="q-stars">★★</span><span class="q-source">산업 12년 3회</span></div>
+      <div class="q-text">보통 송전선용 표준철탑설계의 경우 가장 큰 하중은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'61',1)"><span class="opt-label">①</span> 풍압</div>
+        <div class="option" onclick="selectOption(this,'61',2)"><span class="opt-label">②</span> 애자, 전선의 중량</div>
+        <div class="option" onclick="selectOption(this,'61',3)"><span class="opt-label">③</span> 빙설</div>
+        <div class="option" onclick="selectOption(this,'61',4)"><span class="opt-label">④</span> 전선의 인장하중</div>
+      </div>
+      <div class="explanation" id="exp-61">
+        <div class="answer-line">✓ 정답: ① 풍압</div>
+        철탑에 상시 상정하중에서 가장 크게 고려해야 할 하중은 <strong>풍압하중</strong>이다.
+      </div>
+      <button class="reset-btn" id="rst-61" onclick="resetQuestion('61')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q62 E철탑 (내장형) -->
+    <div class="q-card" id="qc-62">
+      <div class="q-meta"><span class="q-num">45</span><span class="q-stars">★★★★★</span><span class="q-source">기사 95년 5회, 산업 19년 1회</span></div>
+      <div class="q-text">전선로의 지지물 양쪽의 경간차가 큰 곳에 쓰이며 E철탑이라고도 하는 철탑은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'62',1)"><span class="opt-label">①</span> 인류형 철탑</div>
+        <div class="option" onclick="selectOption(this,'62',2)"><span class="opt-label">②</span> 보강형 철탑</div>
+        <div class="option" onclick="selectOption(this,'62',3)"><span class="opt-label">③</span> 각도형 철탑</div>
+        <div class="option" onclick="selectOption(this,'62',4)"><span class="opt-label">④</span> 내장형 철탑</div>
+      </div>
+      <div class="explanation" id="exp-62">
+        <div class="answer-line">✓ 정답: ④ 내장형 철탑</div>
+        <strong>내장형 철탑(E형)</strong>: 수평각도 30°를 초과하거나 양측 경간의 차가 커서 불균형 장력이 현저하게 발생하는 개소에 사용하는 철탑으로, E철탑이라고도 한다.
+      </div>
+      <button class="reset-btn" id="rst-62" onclick="resetQuestion('62')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q63 지선에 걸리는 장력 -->
+    <div class="q-card" id="qc-63">
+      <div class="q-meta"><span class="q-num">46</span><span class="q-stars">★★</span><span class="q-source">기사 94년 6회, 산업 89년 7회</span></div>
+      <div class="q-text">지상높이가 h[m]인 곳에 수평하중 P[kg]를 받는 목주에 지선을 설치할 때 지선 l[m]이 받는 장력은 몇 [kg]인가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'63',1)"><span class="opt-label">①</span> (l/h)P</div>
+        <div class="option" onclick="selectOption(this,'63',2)"><span class="opt-label">②</span> (√(l²-h²)/h)P</div>
+        <div class="option" onclick="selectOption(this,'63',3)"><span class="opt-label">③</span> (h²/√(l²-h²))P</div>
+        <div class="option" onclick="selectOption(this,'63',4)"><span class="opt-label">④</span> (l/√(l²-h²))P</div>
+      </div>
+      <div class="explanation" id="exp-63">
+        <div class="answer-line">✓ 정답: ④ (l/√(l²-h²))P</div>
+        지선이 받는 장력 T₀ = P/cosθ = P/(a/l) = lP/a<br>
+        피타고라스 정리에서 a² + h² = l²이므로 a = √(l²-h²)<br>
+        <span class="formula">T₀ = lP/√(l²-h²) [kg]</span>
+      </div>
+      <button class="reset-btn" id="rst-63" onclick="resetQuestion('63')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q64 지선 가닥수 계산 -->
+    <div class="q-card" id="qc-64">
+      <div class="q-meta"><span class="q-num">47</span><span class="q-stars">★★★</span><span class="q-source">산업 92년 2회</span></div>
+      <div class="q-text">그림과 같이 지선을 설치하여 전주에 가해진 수평장력 800[kg]을 지지하고자 한다. 지선으로서 4[mm] 철선을 사용한다고 하면 몇 가닥 사용해야 하는가? (단, 4[mm] 철선 1가닥의 인장하중은 440[kg]으로 안전율은 2.5이다) (지상높이 8[m], 수평거리 6[m])</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'64',1)"><span class="opt-label">①</span> 7</div>
+        <div class="option" onclick="selectOption(this,'64',2)"><span class="opt-label">②</span> 8</div>
+        <div class="option" onclick="selectOption(this,'64',3)"><span class="opt-label">③</span> 9</div>
+        <div class="option" onclick="selectOption(this,'64',4)"><span class="opt-label">④</span> 10</div>
+      </div>
+      <div class="explanation" id="exp-64">
+        <div class="answer-line">✓ 정답: ② 8가닥</div>
+        지선의 길이 l = √(8²+6²) = √100 = 10[m], cosθ = 6/10<br>
+        지선에 걸리는 장력 T₀ = P/cosθ = 800/(6/10) = 1333.3[kg]<br>
+        사용해야 할 지선가닥수 = T₀/cosθ × 안전율 × (1/440)<br>
+        = (800/(6/√(8²+6²))) × 2.5 × (1/440) = 7.57가닥<br>
+        절상하면 <strong>8가닥</strong>을 사용한다.
+      </div>
+      <button class="reset-btn" id="rst-64" onclick="resetQuestion('64')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q65 지중전선로 장점 아닌 것 -->
+    <div class="q-card" id="qc-65">
+      <div class="q-meta"><span class="q-num">48</span><span class="q-stars">★</span><span class="q-source">기사 13년 3회</span></div>
+      <div class="q-text">지중전선로가 가공전선로에 비해 장점에 해당하는 것이 아닌 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'65',1)"><span class="opt-label">①</span> 경과지확보가 가공전선로에 비해 쉽다.</div>
+        <div class="option" onclick="selectOption(this,'65',2)"><span class="opt-label">②</span> 다회선설치가 가공전선로에 비해 쉽다.</div>
+        <div class="option" onclick="selectOption(this,'65',3)"><span class="opt-label">③</span> 외부기상여건 등의 영향을 받지 않는다.</div>
+        <div class="option" onclick="selectOption(this,'65',4)"><span class="opt-label">④</span> 송전용량이 가공전선로에 비해 크다.</div>
+      </div>
+      <div class="explanation" id="exp-65">
+        <div class="answer-line">✓ 정답: ③ 외부기상여건 등의 영향을 받지 않는다.</div>
+        지중전선로의 장점: 환경과의 조화가 용이하고 시설부지확보가 쉽다. 풍수해와 낙뢰 등 기상상건에 대한 영향을 받지 않는다. 통신선 및 타시설물에 대한 유도장해가 적다. 다회선을 같은 루트에 시공이 가능하다.<br>
+        그러나 <strong>경과지 확보</strong>는 가공전선로에 비해 어렵다. ①번이 맞지 않는 설명이지만, 교재 정답은 ③으로, 지중전선로도 외부기상여건의 영향을 받지 않는다는 것은 장점이다. 교재 기준 정답은 ③번이 아닌 ①번이 틀린 것이다.
+      </div>
+      <button class="reset-btn" id="rst-65" onclick="resetQuestion('65')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q66 케이블 전력손실과 관계없는 것 -->
+    <div class="q-card" id="qc-66">
+      <div class="q-meta"><span class="q-num">49</span><span class="q-stars">★★★</span><span class="q-source">기사 19년 3회, 산업 93년 1회, 99년 3회, 06년 1회, 12년 1회</span></div>
+      <div class="q-text">케이블의 전력손실과 관계없는 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'66',1)"><span class="opt-label">①</span> 도체의 저항손</div>
+        <div class="option" onclick="selectOption(this,'66',2)"><span class="opt-label">②</span> 유전체손</div>
+        <div class="option" onclick="selectOption(this,'66',3)"><span class="opt-label">③</span> 연피손</div>
+        <div class="option" onclick="selectOption(this,'66',4)"><span class="opt-label">④</span> 철손</div>
+      </div>
+      <div class="explanation" id="exp-66">
+        <div class="answer-line">✓ 정답: ④ 철손</div>
+        <strong>철손</strong>은 전기기기의 철심에서 자기포화에 의해 발생하는 손실이다. 케이블의 전력손실과는 관계없다.
+      </div>
+      <button class="reset-btn" id="rst-66" onclick="resetQuestion('66')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q67 지중선로 장점 -->
+    <div class="q-card" id="qc-67">
+      <div class="q-meta"><span class="q-num">50</span><span class="q-stars">★★</span><span class="q-source">산업 12년 3회</span></div>
+      <div class="q-text">가공선로에 대한 지중선로의 장점으로 옳은 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'67',1)"><span class="opt-label">①</span> 건설비가 싸다.</div>
+        <div class="option" onclick="selectOption(this,'67',2)"><span class="opt-label">②</span> 송전용량이 많다.</div>
+        <div class="option" onclick="selectOption(this,'67',3)"><span class="opt-label">③</span> 인축에 대한 안전성이 높으며 환경조화를 이룰 수 있다.</div>
+        <div class="option" onclick="selectOption(this,'67',4)"><span class="opt-label">④</span> 사고복구에 효율적이다.</div>
+      </div>
+      <div class="explanation" id="exp-67">
+        <div class="answer-line">✓ 정답: ③ 인축에 대한 안전성이 높으며 환경조화를 이룰 수 있다.</div>
+        지중전선로는 가공선로에 비해 같은 굵기의 전선으로 송전용량이 적고 공사비가 비싸며 사고 시 고장의 발견 및 보수가 어렵다.<br>
+        장점: 인축 안전성이 높고 <strong>환경조화</strong>를 이룰 수 있다.
+      </div>
+      <button class="reset-btn" id="rst-67" onclick="resetQuestion('67')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q68 지중케이블 고장점 찾는 방법 아닌 것 -->
+    <div class="q-card" id="qc-68">
+      <div class="q-meta"><span class="q-num">51</span><span class="q-stars">★★★★★</span><span class="q-source">기사 97년 2회, 05년 3회, 산업 03년 1회, 05년 1회, 06년 3회, 11년 2회</span></div>
+      <div class="q-text">지중 케이블에 있어서 고장점을 찾는 방법이 아닌 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'68',1)"><span class="opt-label">①</span> Marray loop 시험기에 의한 방법</div>
+        <div class="option" onclick="selectOption(this,'68',2)"><span class="opt-label">②</span> Megger에 의한 측정방법</div>
+        <div class="option" onclick="selectOption(this,'68',3)"><span class="opt-label">③</span> 수색 코일에 의한 방법</div>
+        <div class="option" onclick="selectOption(this,'68',4)"><span class="opt-label">④</span> 펄스에 의한 측정</div>
+      </div>
+      <div class="explanation" id="exp-68">
+        <div class="answer-line">✓ 정답: ② Megger에 의한 측정방법</div>
+        지중 케이블의 고장점 찾는 방법: 머레이루프법, 펄스레이더법, 수색 코일법, 정전용량법<br>
+        <strong>Megger(메거)</strong>는 절연저항 측정 시 사용한다. 고장점 탐색 방법이 아니다.
+      </div>
+      <button class="reset-btn" id="rst-68" onclick="resetQuestion('68')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q69 선택배류기 설치 전기설비 -->
+    <div class="q-card" id="qc-69">
+      <div class="q-meta"><span class="q-num">52</span><span class="q-stars">★★★</span><span class="q-source">산업 90년 2회, 94년 5회, 96년 7회, 00년 2회, 05년 4회</span></div>
+      <div class="q-text">선택배류기는 어느 전기설비에 설치하는가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'69',1)"><span class="opt-label">①</span> 급전선</div>
+        <div class="option" onclick="selectOption(this,'69',2)"><span class="opt-label">②</span> 지하전력 케이블</div>
+        <div class="option" onclick="selectOption(this,'69',3)"><span class="opt-label">③</span> 가공전화선</div>
+        <div class="option" onclick="selectOption(this,'69',4)"><span class="opt-label">④</span> 가공통신 케이블</div>
+      </div>
+      <div class="explanation" id="exp-69">
+        <div class="answer-line">✓ 정답: ② 지하전력 케이블</div>
+        <strong>선택배류기</strong>는 전식작용을 방지하기 위해 <strong>지하전력 케이블</strong>에 설치한다.
+      </div>
+      <button class="reset-btn" id="rst-69" onclick="resetQuestion('69')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q70 케이블 절연내력시험 직류 이유 -->
+    <div class="q-card" id="qc-70">
+      <div class="q-meta"><span class="q-num">53</span><span class="q-stars">★★</span><span class="q-source">기사 96년 2회, 99년 7회, 04년 1회</span></div>
+      <div class="q-text">케이블을 부설한 후 현장에서 절연내력시험을 할 때 직류로 하는 이유는?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'70',1)"><span class="opt-label">①</span> 절연파괴 시까지의 피해가 작다.</div>
+        <div class="option" onclick="selectOption(this,'70',2)"><span class="opt-label">②</span> 절연내력은 직류가 크다.</div>
+        <div class="option" onclick="selectOption(this,'70',3)"><span class="opt-label">③</span> 시험용 전원의 용량이 적다.</div>
+        <div class="option" onclick="selectOption(this,'70',4)"><span class="opt-label">④</span> 케이블의 유전체손이 없다.</div>
+      </div>
+      <div class="explanation" id="exp-70">
+        <div class="answer-line">✓ 정답: ③ 시험용 전원의 용량이 적다.</div>
+        직류로 시험하는 이유는 케이블은 정전용량이 없고 유전체손이 없을 뿐만 아니라 충전용량도 없으므로 <strong>시험용 전원의 용량이 적어져</strong> 이동이 간편하여 휴대하기 쉽다.
+      </div>
+      <button class="reset-btn" id="rst-70" onclick="resetQuestion('70')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q71 소호환 설치목적 -->
+    <div class="q-card" id="qc-71">
+      <div class="q-meta"><span class="q-num">54</span><span class="q-stars">★★★★★</span><span class="q-source">기사 93년 2회, 94년 7회, 00년 5회, 산업 97년 2회, 04년 3회, 11년 1회</span></div>
+      <div class="q-text">소호환(arcing ring)의 설치목적은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'71',1)"><span class="opt-label">①</span> 애자련의 보호</div>
+        <div class="option" onclick="selectOption(this,'71',2)"><span class="opt-label">②</span> 클램프의 보호</div>
+        <div class="option" onclick="selectOption(this,'71',3)"><span class="opt-label">③</span> 이상전압발생의 방지</div>
+        <div class="option" onclick="selectOption(this,'71',4)"><span class="opt-label">④</span> 코로나손의 방지</div>
+      </div>
+      <div class="explanation" id="exp-71">
+        <div class="answer-line">✓ 정답: ① 애자련의 보호</div>
+        소호각, 소호환의 설치 목적:<br>
+        ㉠ 이상전압으로 인한 섬락사고 시 <strong>애자련을 보호</strong><br>
+        ㉡ 애자련의 전압분담 균등화
+      </div>
+      <button class="reset-btn" id="rst-71" onclick="resetQuestion('71')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q72 아킹혼 설치 목적 -->
+    <div class="q-card" id="qc-72">
+      <div class="q-meta"><span class="q-num">55</span><span class="q-stars">★★★</span><span class="q-source">산업 17년 3회</span></div>
+      <div class="q-text">전선에 낙뢰가 가해져서 애자에 섬락이 생기면 아크가 생겨 애자가 손상되는데 이것을 방지하기 위하여 사용하는 것은?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'72',1)"><span class="opt-label">①</span> 댐퍼(damper)</div>
+        <div class="option" onclick="selectOption(this,'72',2)"><span class="opt-label">②</span> 아킹혼(arcing horn)</div>
+        <div class="option" onclick="selectOption(this,'72',3)"><span class="opt-label">③</span> 아머로드(armor rod)</div>
+        <div class="option" onclick="selectOption(this,'72',4)"><span class="opt-label">④</span> 가공지선(overhead ground wire)</div>
+      </div>
+      <div class="explanation" id="exp-72">
+        <div class="answer-line">✓ 정답: ② 아킹혼(arcing horn)</div>
+        <strong>아킹혼(소호각)</strong>의 사용목적:<br>
+        ㉠ 뇌격으로 인한 섬락사고 시 애자련을 보호<br>
+        ㉡ 애자련의 전압분담 균등화<br>
+        ㉢ 전기적 접지에 의한 코로나 발생의 억제
+      </div>
+      <button class="reset-btn" id="rst-72" onclick="resetQuestion('72')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q73 현수애자 4개 66kV 누설컨덕턴스 -->
+    <div class="q-card" id="qc-73">
+      <div class="q-meta"><span class="q-num">56</span><span class="q-stars">★★★</span><span class="q-source">기사 13년 1회, 산업 92년 2·3회, 99년 3·4회, 06년 2회, 18년 3회</span></div>
+      <div class="q-text">현수애자 4개를 1연으로 한 66[kV] 송전선로가 있다. 현수애자 1개의 절연저항은 1500[MΩ]. 이 선로의 경간이 200[m]라면 선로 1[km]당 누설 컨덕턴스는 몇 [℧]인가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'73',1)"><span class="opt-label">①</span> 0.83×10⁻⁹</div>
+        <div class="option" onclick="selectOption(this,'73',2)"><span class="opt-label">②</span> 0.83×10⁻⁴</div>
+        <div class="option" onclick="selectOption(this,'73',3)"><span class="opt-label">③</span> 0.83×10⁻³</div>
+        <div class="option" onclick="selectOption(this,'73',4)"><span class="opt-label">④</span> 0.83×10⁻²</div>
+      </div>
+      <div class="explanation" id="exp-73">
+        <div class="answer-line">✓ 정답: ① 0.83×10⁻⁹[℧]</div>
+        1[km]당 지지물경간이 200[m]이므로 철탑의 수는 5개<br>
+        애자련의 절연저항은 병렬로 환산해서 1[km]당<br>
+        합성저항 R = 4×1500×10⁶/5 = (6/5)×10⁹[Ω]<br>
+        누설 컨덕턴스 G = 1/R = 5/(6×10⁹) = 0.83×10⁻⁹[℧]
+      </div>
+      <button class="reset-btn" id="rst-73" onclick="resetQuestion('73')">↺ 다시 풀기</button>
+    </div>
+
+    <!-- Q74 아킹혼 설치목적 (13번 설치목적) -->
+    <div class="q-card" id="qc-74">
+      <div class="q-meta"><span class="q-num">57</span><span class="q-stars">★★★★★</span><span class="q-source">기사 17년 3회, 19년 2회, 산업 13년 2회, 15년 2회</span></div>
+      <div class="q-text">아킹혼의 설치목적은 무엇인가?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'74',1)"><span class="opt-label">①</span> 코로나손의 방지</div>
+        <div class="option" onclick="selectOption(this,'74',2)"><span class="opt-label">②</span> 이상전압 제한</div>
+        <div class="option" onclick="selectOption(this,'74',3)"><span class="opt-label">③</span> 지지물의 보호</div>
+        <div class="option" onclick="selectOption(this,'74',4)"><span class="opt-label">④</span> 섬락사고 시 애자의 보호</div>
+      </div>
+      <div class="explanation" id="exp-74">
+        <div class="answer-line">✓ 정답: ④ 섬락사고 시 애자의 보호</div>
+        <strong>아킹혼(arcing horn)</strong>: 뇌중격전압에 의한 섬락으로부터 애자련을 보호하기 위해 아킹혼(링)을 설치하며 그 기능은 다음과 같다.<br>
+        ㉠ 뇌격으로 인한 섬락사고 시 애자련을 보호한다.<br>
+        ㉡ 애자련의 전압분담을 균등화한다.<br>
+        ㉢ 코로나 발생 억제 및 애자의 열적 파괴를 방지한다.
+      </div>
+      <button class="reset-btn" id="rst-74" onclick="resetQuestion('74')">↺ 다시 풀기</button>
+    </div>
+
+  </div><!-- end ch02 -->
+
+</div><!-- end main -->
+
+<script>
+const ANSWERS = {
+  '01': 3, '02': 4, '03': 4, '04': 1, '05': 3,
+  '06': 3, '07': 3, '08': 4, '09': 3, '10': 4,
+  '11': 1, '12': 4, '13': 3, '14': 3, '15': 4,
+  '16': 3, '17': 4,
+  '18': 4, '19': 1, '20': 2, '21': 4, '22': 1,
+  '23': 4, '24': 2, '25': 4, '26': 2, '27': 1,
+  '28': 2, '29': 4, '30': 4, '31': 2, '32': 3,
+  '33': 1, '34': 1, '35': 1, '36': 2, '37': 3,
+  '38': 2, '39': 3, '40': 3, '41': 1, '42': 1,
+  '43': 2, '44': 1, '45': 2, '46': 1, '47': 1,
+  '48': 1, '49': 2, '50': 2, '51': 2, '52': 3,
+  '53': 4, '54': 4, '55': 3, '56': 2, '57': 2,
+  '58': 1, '59': 1, '60': 1, '61': 1, '62': 4,
+  '63': 4, '64': 2, '65': 3, '66': 4, '67': 3,
+  '68': 2, '69': 2, '70': 3, '71': 1, '72': 2,
+  '73': 1, '74': 4
+};
+
+// All question IDs
+const ALL_IDS = Object.keys(ANSWERS);
+const CH01_IDS = ALL_IDS.filter(id => parseInt(id) <= 17);
+const CH02_IDS = ALL_IDS.filter(id => parseInt(id) >= 18);
+
+let stats = { answered: 0, correct: 0 };
+let questionStates = {}; // id -> {answered, wasCorrect, wrongCount}
+let reviewMode = false;
+let reviewRound = 0;
+let currentChapter = 'ch01';
+
+// ── Core answer logic ──────────────────────────────────────────
+function selectOption(el, qid, chosen) {
+  if (questionStates[qid] && questionStates[qid].answered) return;
+
+  const card = document.getElementById('qc-' + qid);
+  const options = card.querySelectorAll('.option');
+  const correct = ANSWERS[qid];
+  const isCorrect = chosen === correct;
+
+  options.forEach(o => o.classList.add('disabled'));
+  el.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) options[correct - 1].classList.add('show-correct');
+
+  document.getElementById('exp-' + qid).classList.add('show');
+  document.getElementById('rst-' + qid).classList.add('show');
+  card.classList.add(isCorrect ? 'answered-correct' : 'answered-wrong');
+
+  const prev = questionStates[qid] || { answered: false, wrongCount: 0 };
+  const wrongCount = prev.wrongCount || 0;
+
+  questionStates[qid] = {
+    answered: true,
+    wasCorrect: isCorrect,
+    wrongCount: isCorrect ? wrongCount : wrongCount + 1
+  };
+
+  if (!prev.answered) {
+    stats.answered++;
+    if (isCorrect) stats.correct++;
+  } else {
+    // re-answer in review: adjust stats
+    if (!prev.wasCorrect && isCorrect) stats.correct++;
+    else if (prev.wasCorrect && !isCorrect) stats.correct--;
+  }
+
+  // Flag card if wrong
+  if (!isCorrect) {
+    card.classList.add('wrong-flag');
+  } else {
+    card.classList.remove('wrong-flag');
+  }
+
+  updateStats();
+  updateProgress();
+  updateReviewBar();
+
+  // In review mode: check if all review cards now answered correctly
+  if (reviewMode) checkReviewComplete();
+}
+
+function resetQuestion(qid) {
+  const card = document.getElementById('qc-' + qid);
+  const options = card.querySelectorAll('.option');
+
+  options.forEach(o => {
+    o.classList.remove('disabled', 'selected', 'correct', 'wrong', 'show-correct');
+  });
+
+  document.getElementById('exp-' + qid).classList.remove('show');
+  document.getElementById('rst-' + qid).classList.remove('show');
+  card.classList.remove('answered-correct', 'answered-wrong');
+
+  if (questionStates[qid] && questionStates[qid].answered) {
+    stats.answered--;
+    if (questionStates[qid].wasCorrect) stats.correct--;
+  }
+
+  const prev = questionStates[qid] || {};
+  questionStates[qid] = { answered: false, wrongCount: prev.wrongCount || 0 };
+  updateStats();
+  updateProgress();
+  updateReviewBar();
+}
+
+// ── Review mode ────────────────────────────────────────────────
+function getWrongIds() {
+  return ALL_IDS.filter(id => {
+    const s = questionStates[id];
+    return s && s.answered && !s.wasCorrect;
+  });
+}
+
+function updateReviewBar() {
+  const wrongIds = getWrongIds();
+  document.getElementById('wrong-count').textContent = wrongIds.length;
+  const btn = document.getElementById('btn-start-review');
+  btn.disabled = wrongIds.length === 0;
+  btn.textContent = reviewMode
+    ? `🔁 다음 라운드 (${wrongIds.length}개)`
+    : `틀린 문제만 다시 풀기 (${wrongIds.length}개)`;
+}
+
+function startReviewMode() {
+  const wrongIds = getWrongIds();
+  if (wrongIds.length === 0) return;
+
+  reviewMode = true;
+  reviewRound++;
+
+  // Reset wrong questions for re-attempt
+  wrongIds.forEach(qid => {
+    const card = document.getElementById('qc-' + qid);
+    const options = card.querySelectorAll('.option');
+    options.forEach(o => o.classList.remove('disabled', 'selected', 'correct', 'wrong', 'show-correct'));
+    document.getElementById('exp-' + qid).classList.remove('show');
+    document.getElementById('rst-' + qid).classList.remove('show');
+    card.classList.remove('answered-correct', 'answered-wrong', 'wrong-flag');
+    card.classList.add('in-review');
+
+    const prev = questionStates[qid] || {};
+    questionStates[qid] = { answered: false, wrongCount: prev.wrongCount || 0 };
+    stats.answered--;
+  });
+
+  // Mark all non-wrong cards as NOT in-review
+  ALL_IDS.forEach(qid => {
+    if (!wrongIds.includes(qid)) {
+      document.getElementById('qc-' + qid).classList.remove('in-review');
+    }
+  });
+
+  document.body.classList.add('review-mode');
+
+  // Show exit button and round label
+  document.getElementById('btn-exit-review').style.display = 'inline-block';
+  const roundLabel = document.getElementById('review-round-label');
+  roundLabel.style.display = 'inline';
+  roundLabel.textContent = `라운드 ${reviewRound} · ${wrongIds.length}문제`;
+
+  // Switch to chapter that has the first wrong question
+  const firstWrong = wrongIds[0];
+  const targetCh = parseInt(firstWrong) <= 17 ? 'ch01' : 'ch02';
+  _switchChapter(targetCh);
+
+  // Show review progress banner
+  showReviewBanner(wrongIds.length, wrongIds.length);
+
+  updateStats();
+  updateProgress();
+  updateReviewBar();
+
+  // Scroll to first wrong card
+  setTimeout(() => {
+    document.getElementById('qc-' + wrongIds[0]).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+}
+
+function exitReviewMode() {
+  reviewMode = false;
+
+  // Remove in-review class from all cards
+  ALL_IDS.forEach(qid => {
+    document.getElementById('qc-' + qid).classList.remove('in-review');
+  });
+
+  document.body.classList.remove('review-mode');
+  document.getElementById('btn-exit-review').style.display = 'none';
+  document.getElementById('review-round-label').style.display = 'none';
+  hideReviewBanner();
+
+  const btn = document.getElementById('btn-start-review');
+  btn.textContent = `틀린 문제만 다시 풀기`;
+  updateReviewBar();
+}
+
+function checkReviewComplete() {
+  // Check if all in-review cards have been answered correctly
+  const reviewIds = ALL_IDS.filter(id => {
+    return document.getElementById('qc-' + id).classList.contains('in-review');
+  });
+
+  const remaining = reviewIds.filter(id => {
+    const s = questionStates[id];
+    return !s || !s.answered || !s.wasCorrect;
+  });
+
+  const answered = reviewIds.filter(id => {
+    const s = questionStates[id];
+    return s && s.answered;
+  });
+
+  updateReviewBanner(reviewIds.length, remaining.length);
+
+  if (remaining.length === 0 && reviewIds.length > 0) {
+    showCelebration();
+  }
+}
+
+// ── Review banner ──────────────────────────────────────────────
+let bannerEl = null;
+function ensureBanner() {
+  if (!bannerEl) {
+    bannerEl = document.createElement('div');
+    bannerEl.className = 'review-progress-banner';
+    bannerEl.id = 'review-banner';
+    document.querySelector('.main').prepend(bannerEl);
+  }
+  return bannerEl;
+}
+function showReviewBanner(total, remaining) {
+  const b = ensureBanner();
+  b.innerHTML = `🔴 <strong>오답 복습 라운드 ${reviewRound}</strong> &nbsp;·&nbsp; 남은 문제: <strong style="color:var(--wrong)">${remaining}</strong> / ${total}`;
+  b.classList.add('show');
+}
+function updateReviewBanner(total, remaining) {
+  const b = document.getElementById('review-banner');
+  if (!b) return;
+  b.innerHTML = `🔴 <strong>오답 복습 라운드 ${reviewRound}</strong> &nbsp;·&nbsp; 남은 문제: <strong style="color:var(--wrong)">${remaining}</strong> / ${total}`;
+}
+function hideReviewBanner() {
+  const b = document.getElementById('review-banner');
+  if (b) b.classList.remove('show');
+}
+
+function showCelebration() {
+  const main = document.querySelector('.main');
+  let cel = document.getElementById('celebrate-el');
+  if (!cel) {
+    cel = document.createElement('div');
+    cel.id = 'celebrate-el';
+    cel.className = 'celebrate-banner';
+    main.prepend(cel);
+  }
+  cel.innerHTML = `🎉 라운드 ${reviewRound} 완료! 모든 문제를 맞혔어요!<br><span style="font-size:13px;font-weight:400;color:var(--text2)">아직 틀린 문제가 남아있다면 다음 라운드를 시작하세요.</span>`;
+  cel.classList.add('show');
+  setTimeout(() => cel.classList.remove('show'), 4000);
+}
+
+// ── Stats & Progress ───────────────────────────────────────────
+function updateStats() {
+  document.getElementById('answered-count').textContent = stats.answered;
+  document.getElementById('correct-count').textContent = stats.correct;
+  const acc = stats.answered > 0 ? Math.round(stats.correct / stats.answered * 100) : 0;
+  document.getElementById('accuracy').textContent = acc;
+}
+
+function updateProgress() {
+  let ch01_done = 0;
+  CH01_IDS.forEach(id => { if (questionStates[id] && questionStates[id].answered) ch01_done++; });
+  document.getElementById('prog-ch01').style.width = (ch01_done / 17 * 100) + '%';
+  document.getElementById('prog-text-ch01').textContent = ch01_done + ' / 17';
+
+  let ch02_done = 0;
+  CH02_IDS.forEach(id => { if (questionStates[id] && questionStates[id].answered) ch02_done++; });
+  document.getElementById('prog-ch02').style.width = (ch02_done / 57 * 100) + '%';
+  document.getElementById('prog-text-ch02').textContent = ch02_done + ' / 57';
+}
+
+// ── Chapter switching ──────────────────────────────────────────
+function _switchChapter(ch) {
+  currentChapter = ch;
+  document.querySelectorAll('.chapter-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(ch).classList.add('active');
+  const tabs = document.querySelectorAll('.tab');
+  if (ch === 'ch01') tabs[0].classList.add('active');
+  else if (ch === 'ch02') tabs[1].classList.add('active');
+}
+
+function showChapter(ch) {
+  _switchChapter(ch);
+}
+</script>
+</body>
+</html>
