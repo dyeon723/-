@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>직류기 기출문제 - CHAPTER 01</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+:root{--bg:#0d0f18;--sf:#161929;--sf2:#1d2035;--bd:#272b42;--ac:#5b9cf6;--ac2:#f5c842;--ok:#3ecf8e;--ng:#f05a5a;--tx:#e4e8f5;--tx2:#8e97be;--tx3:#5a6285;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;}
+.hd{background:linear-gradient(135deg,#161929,#0d0f18);border-bottom:2px solid var(--ac);padding:18px 24px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.hd h1{font-size:1.25rem;font-weight:900;color:var(--ac);}
+.hd p{font-size:.72rem;color:var(--tx3);margin-top:2px;}
+.hbtns{display:flex;gap:7px;flex-wrap:wrap;align-items:center;}
+.fb{background:var(--sf2);border:1px solid var(--bd);color:var(--tx2);padding:5px 12px;border-radius:20px;font-size:.74rem;cursor:pointer;font-family:inherit;transition:all .2s;}
+.fb:hover,.fb.on{background:var(--ac);color:#fff;border-color:var(--ac);}
+.bdg{background:var(--ac);color:#fff;font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:12px;}
+.sb{padding:9px 24px;background:var(--sf);border-bottom:1px solid var(--bd);}
+.sb input{width:100%;max-width:360px;background:var(--sf2);border:1px solid var(--bd);color:var(--tx);padding:6px 12px;border-radius:8px;font-family:inherit;font-size:.82rem;outline:none;}
+.sb input:focus{border-color:var(--ac);}
+.sb input::placeholder{color:var(--tx3);}
+.main{max-width:860px;margin:0 auto;padding:18px 14px 60px;display:flex;flex-direction:column;gap:13px;}
+/* card */
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden;transition:border-color .2s;}
+.card:hover{border-color:var(--ac);}
+.ch{display:flex;align-items:flex-start;gap:10px;padding:13px 15px 11px;cursor:pointer;user-select:none;}
+.cn{background:var(--ac);color:#fff;font-weight:900;font-size:.75rem;min-width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ct{flex:1;}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px;}
+.tg{font-size:.64rem;padding:2px 7px;border-radius:9px;font-weight:500;}
+.tg-g{background:rgba(91,156,246,.14);color:var(--ac);border:1px solid rgba(91,156,246,.28);}
+.tg-s{background:rgba(245,200,66,.13);color:var(--ac2);border:1px solid rgba(245,200,66,.27);}
+.tg-yr{background:rgba(255,255,255,.05);color:var(--tx3);font-size:.62rem;}
+.qt{font-size:.9rem;line-height:1.65;color:var(--tx);font-weight:500;}
+.arr{color:var(--tx3);font-size:.88rem;flex-shrink:0;margin-top:5px;transition:transform .25s;}
+.card.open .arr{transform:rotate(180deg);}
+/* opts */
+.opts{padding:0 15px 12px 57px;display:flex;flex-direction:column;gap:4px;}
+.opt{display:flex;align-items:flex-start;gap:7px;padding:7px 9px;border-radius:7px;border:1px solid transparent;font-size:.84rem;color:var(--tx2);line-height:1.5;cursor:pointer;transition:all .18s;}
+.opt:hover:not(.lk){background:rgba(91,156,246,.07);border-color:rgba(91,156,246,.2);}
+.on{font-size:.73rem;font-weight:700;min-width:17px;color:var(--tx3);padding-top:1px;flex-shrink:0;}
+.opt.sel{background:rgba(91,156,246,.1);border-color:rgba(91,156,246,.35);color:var(--tx);}
+.opt.cor{background:rgba(62,207,142,.09);border-color:rgba(62,207,142,.35);color:var(--ok)!important;}
+.opt.cor .on{color:var(--ok);}
+.opt.wrg{background:rgba(240,90,90,.09);border-color:rgba(240,90,90,.3);color:var(--ng)!important;}
+.opt.wrg .on{color:var(--ng);}
+/* body */
+.cbody{display:none;border-top:1px solid var(--bd);}
+.card.open .cbody{display:block;}
+.abar{display:flex;align-items:center;gap:9px;padding:10px 15px;background:var(--sf2);border-bottom:1px solid var(--bd);flex-wrap:wrap;}
+.ckbtn{background:var(--ac);color:#fff;border:none;padding:6px 15px;border-radius:7px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;}
+.ckbtn:hover{background:#4a87e8;}
+.rtbtn{background:transparent;color:var(--tx3);border:1px solid var(--bd);padding:6px 13px;border-radius:7px;font-size:.75rem;cursor:pointer;font-family:inherit;transition:all .2s;}
+.rtbtn:hover{color:var(--ac);border-color:var(--ac);}
+.rmsg{font-size:.8rem;font-weight:700;}
+.rmsg.ok{color:var(--ok);}
+.rmsg.ng{color:var(--ng);}
+.ansbar{display:flex;align-items:center;gap:9px;padding:9px 15px;background:rgba(62,207,142,.05);border-bottom:1px solid var(--bd);}
+.albl{font-size:.68rem;font-weight:700;color:var(--ok);text-transform:uppercase;letter-spacing:.5px;}
+.aval{font-weight:900;font-size:.9rem;color:var(--ok);}
+.expl{padding:13px 15px 15px;font-size:.83rem;line-height:1.85;color:var(--tx2);}
+.expl strong{color:var(--ac2);font-weight:700;}
+.fb0{background:#0b0e16;border:1px solid var(--bd);border-left:3px solid var(--ac);border-radius:6px;padding:11px 14px;margin:9px 0;line-height:2.1;overflow-x:auto;}
+.fl{margin:2px 0;white-space:nowrap;}
+.tip{background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.2);border-radius:6px;padding:8px 12px;margin-top:8px;font-size:.8rem;color:var(--ac2);}
+.tip::before{content:"💡 ";}
+.ctbl{width:100%;border-collapse:collapse;margin:9px 0;font-size:.79rem;}
+.ctbl th,.ctbl td{border:1px solid var(--bd);padding:5px 9px;text-align:center;}
+.ctbl th{background:var(--sf2);color:var(--ac);font-weight:700;}
+.ctbl td{color:var(--tx2);}
+.gw{margin:11px 0;text-align:center;}
+.gw svg{max-width:100%;height:auto;border-radius:8px;}
+@media(max-width:580px){.opts{padding-left:42px;}.qt{font-size:.86rem;}}
+</style>
+</head>
+<body>
+<div class="hd">
+  <div><h1>⚡ 직류기 기출문제</h1><p>CHAPTER 01 · 전기기기</p></div>
+  <div class="hbtns">
+    <button class="fb on" onclick="fAll(this)">전체</button>
+    <button class="fb" onclick="fTag('g',this)">기사</button>
+    <button class="fb" onclick="fTag('s',this)">산업기사</button>
+    <span class="bdg" id="bdg">0문제</span>
+  </div>
+</div>
+<div class="sb"><input id="si" placeholder="문제 번호 또는 키워드로 검색…" oninput="doSearch()"></div>
+<div class="main" id="main"></div>
+
+<script>
+const N=['①','②','③','④'];
+const QS=[
+{n:1,g:'s',yr:'산업 03년 3회',q:'직류기를 구성하고 있는 3요소는?',
+ o:['전기자, 계자, 슬립링','전기자, 계자, 정류자','전기자, 정류자, 브러시','전기자, 계자, 보상권선'],ans:2,
+ e:`<strong>직류기 3요소</strong> : 전기자, 계자, 정류자<br>교류기 3요소 : 전기자, 계자, 슬립링`},
+
+{n:2,g:'s',yr:'산업 14년 1회',q:'직류기에서 공극을 사이에 두고 전기자와 함께 자기회로를 형성하는 것은?',
+ o:['계자','슬롯','정류자','브러시'],ans:1,
+ e:`<strong>계자</strong> : 철심에 코일을 감아서 전류를 흘려 여자현상으로 자속을 만드는 부분`},
+
+{n:4,g:'s',yr:'산업 16년 3회',q:'다음 중 직류기의 전기자에 사용되지 않는 권선법은?',
+ o:['이층권','고상권','폐로권','단층권'],ans:4,
+ e:`직류기 전기자권선법 : 고상권(개로권·폐로권), 이층권(중권·파권)<br><strong>단층권은 사용되지 않는다.</strong>`},
+
+{n:5,g:'gs',yr:'기사 12년 1회(유사) / 산업 93년 2회·94년 5회·97년 2회·06년 3회',
+ q:'전기자도체의 굵기, 권수, 극수가 모두 같을 때 단중 파권이 단중 중권에 비교하여 다른 것은?',
+ o:['대전류, 고전압','소전류, 고전압','대전류, 저전압','소전류, 저전압'],ans:2,
+ e:`<table class="ctbl"><tr><th>구분</th><th>중권</th><th>파권</th></tr>
+<tr><td>병렬회로수(a)</td><td>P극수</td><td>2</td></tr>
+<tr><td>브러시수(b)</td><td>P극수</td><td>2</td></tr>
+<tr><td>용도</td><td>저전압·대전류</td><td>고전압·소전류</td></tr>
+<tr><td>균압환</td><td>사용함</td><td>사용안함</td></tr></table>`},
+
+{n:9,g:'s',yr:'산업 15년 3회',
+ q:'다음 직류기의 권선법에 대한 설명 중 틀린 것은?',
+ o:['전기자권선에 환상권은 거의 사용되지 않는다.','전기자권선에는 고상권이 주로 이용되고 있다.','정류를 양호하게 하기 위해 단절권이 이용된다.','저전압 대전류 직류기에는 파권이 적당하며 고전압 직류기에는 중권이 적당하다.'],ans:4,
+ e:`① 전기자권선에 <strong>환상권</strong>은 거의 사용되지 않는다. <span style="color:var(--ok)">→ 맞음</span><br>
+&nbsp;&nbsp;&nbsp;(환상권은 철심 내부 도체가 기전력에 기여하지 못해 비효율적)<br><br>
+② 전기자권선에는 <strong>고상권(드럼권)</strong>이 주로 이용된다. <span style="color:var(--ok)">→ 맞음</span><br>
+&nbsp;&nbsp;&nbsp;(철심 외부에만 도체 배치 → 효율적, 현재 직류기에 표준적으로 사용)<br><br>
+③ 정류를 양호하게 하기 위해 <strong>단절권</strong>이 이용된다. <span style="color:var(--ok)">→ 맞음</span><br>
+&nbsp;&nbsp;&nbsp;(코일피치 &lt; 극피치 → 정류 개선, 고조파 감소)<br><br>
+④ 저전압 대전류 직류기에는 파권이 적당하며 고전압 직류기에는 중권이 적당하다. <span style="color:var(--ng)">→ 틀림 ✗</span><br><br>
+<div class="tip">저전압·대전류 → <strong>중권</strong> &nbsp;|&nbsp; 고전압·소전류 → <strong>파권</strong><br>
+(파권은 병렬회로수 a=2로 고정되어 항상 직렬 연결 → 고전압·소전류에 적합)</div>
+<table class="ctbl" style="margin-top:10px"><tr><th>구분</th><th>중권</th><th>파권</th></tr>
+<tr><td>병렬회로수(a)</td><td>P (극수)</td><td>2 (극수 무관)</td></tr>
+<tr><td>브러시수(b)</td><td>P (극수)</td><td>2</td></tr>
+<tr><td>용도</td><td>저전압·대전류</td><td>고전압·소전류</td></tr>
+<tr><td>균압환</td><td>사용함</td><td>사용 안 함</td></tr></table>`},
+
+{n:11,g:'s',yr:'산업 90년 2회·95년 6회·03년 2회',
+ q:'4극 전기자권선이 단중 중권인 직류발전기의 전기자전류가 20[A]이면 각 전기자권선의 병렬회로에 흐르는 전류[A]는?',
+ o:['10','8','5','2'],ans:3,
+ e:`중권의 경우 병렬회로수 a = P = 4
+<div class="fb0"><div class="fl">\\( I = \\dfrac{I_a}{a} = \\dfrac{20}{4} = 5\\;[\\text{A}] \\)</div></div>`},
+
+{n:15,g:'gs',yr:'기사 13년 1회·16년 3회·17년 1회 / 산업 05년 1회·07년 2회·15년 1회',
+ q:'6극 직류발전기의 정류자편수가 132, 단자전압이 220[V], 직렬도체수가 132개이고 중권이다. 정류자편간 전압[V]은?',
+ o:['10','20','30','40'],ans:1,
+ e:`<div class="fb0"><div class="fl">\\( e = \\dfrac{E}{K} \\times a = \\dfrac{220}{132} \\times 6 = 10\\;[\\text{V}] \\)</div></div>
+E : 유기기전력[V] &nbsp; a = P : 병렬회로수 &nbsp; K : 정류자편수`},
+
+{n:16,g:'s',yr:'산업 92년 2회',
+ q:'4극의 직류발전기가 있다. 정류자 지름이 14.6[cm], 정류자편수가 92개, 브러시 두께 0.955[cm]로 매분 1150회전한다면 1개 코일의 정류주기[S]는?',
+ o:['1.085×10⁻³','1.61×10⁻³','1.85×10⁻⁴','5.19×10⁻⁴'],ans:2,
+ e:`<div class="fb0">
+<div class="fl">\\( T_c = \\dfrac{2b - \\dfrac{\\pi D}{K}}{\\pi D \\cdot \\dfrac{N}{60}} \\)</div>
+<div class="fl">\\( = \\dfrac{2 \\times 0.955 - \\dfrac{3.14 \\times 14.6}{92}}{3.14 \\times 14.6 \\times \\dfrac{1150}{60}} = 1.61 \\times 10^{-3}\\;[\\text{S}] \\)</div></div>
+b : 브러시두께[m] &nbsp; D : 정류자지름[m] &nbsp; K : 정류자편수 &nbsp; N : 회전수[rpm]`},
+
+{n:17,g:'s',yr:'산업 90년 7회',
+ q:'전기자의 지름 D[m], 길이 l[m]인 전기자에 전기자권선을 감은 직류발전기가 있다. 자극의 수 P, 각 극의 자속수가 φ[Wb]일 때 전기자표면의 자속밀도[Wb/m²]는?',
+ o:['\\(\\dfrac{\\pi DP}{60}\\)','\\(\\dfrac{P\\phi}{\\pi Dl}\\)','\\(\\dfrac{\\pi Dl}{P\\phi}\\)','\\(\\dfrac{\\pi Dl}{P}\\)'],ans:2,
+ e:`<div class="fb0"><div class="fl">\\( B = \\dfrac{P\\phi}{\\pi Dl}\\;[\\text{Wb/m}^2] \\)</div></div>
+P : 극수 &nbsp; D : 지름 &nbsp; φ : 극당자속`},
+
+{n:18,g:'s',yr:'산업 99년 4회·02년 3회·04년 3회·05년 3회·07년 2회·11년 3회',
+ q:'전기자 지름 0.2[m]의 직류발전기가 1.5[kW]의 출력에서 1800[rpm]으로 회전하고 있을 때 전기자 주변속도[m/sec]는?',
+ o:['18.84','21.96','32.74','42.85'],ans:1,
+ e:`<div class="fb0"><div class="fl">\\( v = \\pi D \\cdot \\dfrac{N}{60} = 3.14 \\times 0.2 \\times \\dfrac{1800}{60} = 18.84\\;[\\text{m/sec}] \\)</div></div>`},
+
+{n:19,g:'s',yr:'산업 96년 4회·97년 2회·14년 3회(유사)',
+ q:'자극수 4, 전기자도체수 400, 자극당 유효자속 0.01[Wb], 600[rpm]으로 회전하는 파권 직류발전기의 유기기전력[V]은?',
+ o:['80','100','120','140'],ans:1,
+ e:`파권의 경우 병렬회로수 a = 2
+<div class="fb0"><div class="fl">\\( E = \\dfrac{PZ\\phi}{a} \\cdot \\dfrac{N}{60} = \\dfrac{4 \\times 400 \\times 0.01}{2} \\times \\dfrac{600}{60} = 80\\;[\\text{V}] \\)</div></div>`},
+
+{n:20,g:'s',yr:'산업 91년 2회',
+ q:'8극으로 된 직류 중권발전기의 자극의 자속이 0.025[Wb]이고, 전기자도체수가 500이다. 1200[rpm]으로 회전시킬 때 유기되는 기전력[V]은?',
+ o:['100','150','200','250'],ans:4,
+ e:`중권의 경우 병렬회로수 a = P = 8
+<div class="fb0"><div class="fl">\\( E = \\dfrac{8 \\times 500 \\times 0.025}{8} \\times \\dfrac{1200}{60} = 250\\;[\\text{V}] \\)</div></div>`},
+
+{n:24,g:'gs',yr:'기사 13년 2회 / 산업 95년 2회·96년 6회·99년 3회·05년 1·3회·07년 4회',
+ q:'포화하고 있지 않은 직류발전기의 회전수가 1/2로 되었을 때 기전력을 전과 같은 값으로 하자면 여자전류를 얼마로 해야 하는가?',
+ o:['1/2배','1배','2배','4배'],ans:3,
+ e:`\\(E \\propto k\\phi N\\) 에서 E 일정할 때
+<div class="fb0">
+<div class="fl">\\( \\phi \\propto \\dfrac{1}{N} \\Rightarrow \\dfrac{1}{\\;\\tfrac{1}{2}\\;} = 2\\text{배} \\)</div></div>
+여자전류 ∝ 자속이므로 <strong>2배</strong> 증가`},
+
+{n:25,g:'s',yr:'산업 00년 6회·04년 2회·14년 1회',
+ q:'브러시 홀더(brush holder)는 브러시를 정류자면의 적당한 위치에서 스프링에 의하여 항상 일정한 압력으로 정류자면에 접속하여야 한다. 가장 적당한 압력[kg/cm²]은?',
+ o:['1~2','0.5~1','0.15~0.25','0.01~0.15'],ans:3,
+ e:`<strong>브러시 홀더</strong> : 브러시를 정류자·슬립링에 적당한 압력으로 접촉시키는 장치<br>
+적정 압력 : <strong>0.15 ~ 0.25 [kg/cm²]</strong>`},
+
+{n:26,g:'gs',yr:'기사 93년 5회·17년 3회 / 산업 19년 2회(유사)',
+ q:'전기자 총도체수 152, 4극, 파권인 직류발전기의 전기자전류 100[A]일 때 극당 감자기자력[AT/극]은? (단, 브러시의 이동각은 10°이다)',
+ o:['33.6','52.8','105.6','211.2'],ans:3,
+ e:`<div class="fb0">
+<div class="fl">\\( F_d = \\dfrac{ZI_a}{2aP} \\times \\dfrac{2\\alpha}{180} \\)</div>
+<div class="fl">\\( = \\dfrac{152 \\times 100}{2 \\times 2 \\times 4} \\times \\dfrac{2 \\times 10}{180} = 105.6\\;[\\text{AT/극}] \\)</div></div>
+Z : 도체수 &nbsp; a : 병렬회로수(파권=2) &nbsp; α : 브러시 이동각`},
+
+{n:27,g:'s',yr:'산업 98년 6회·00년 5회',
+ q:'직류발전기에서 브러시간에 유기되는 기전력의 파형의 맥동을 방지하는 대책이 될 수 없는 것은?',
+ o:['사구(skewed slot)를 채용할 것','갭의 길이를 균일하게 할 것','슬롯폭에 대하여 갭을 크게 할 것','정류자면수를 적게 할 것'],ans:4,
+ e:`맥동을 줄이려면 <strong>정류자편수를 많이</strong> 설치해야 한다.<br>'적게 할 것'은 오히려 맥동을 증가시키므로 대책이 아니다.`},
+
+{n:28,g:'g',yr:'기사 92년 5회·13년 3회·16년 1회',
+ q:'직류기에서 전기자반작용이란 전기자권선에 흐르는 전류로 인하여 생긴 자속이 무엇에 영향을 주는 현상인가?',
+ o:['모든 부분에 영향을 주는 현상','계자극에 영향을 주는 현상','감자작용만을 하는 현상','편자작용만을 하는 현상'],ans:2,
+ e:`전기자권선의 전류에 의해 발생한 누설자속이 <strong>계자극의 주자속</strong>에 영향을 미쳐 자속의 분포를 변화시키는 현상`},
+
+{n:29,g:'s',yr:'산업 91년 7회·94년 4회·06년 3회',
+ q:'직류발전기의 전기자반작용을 설명함에 있어 그 영향을 없애는 데 가장 유효한 것은?',
+ o:['균압환','탄소 브러시','보상권선','보극'],ans:3,
+ e:`⊙ 보극 설치 (소극적 대책)<br>
+⊙ <strong>보상권선</strong> 설치 (적극적 대책) ← 가장 유효<br>
+⊙ 로커를 이용하여 브러시 이동`},
+
+{n:32,g:'gs',yr:'기사 16년 2회 / 산업 91년 2회·01년 2·3회',
+ q:'전기자반작용이 직류발전기에 영향을 주는 것을 설명한 것이다. 틀린 설명은?',
+ o:['전기자중성축을 이동시킨다.','자속을 감소시켜 부하 시 전압강하의 원인이 된다.','정류자편간 전압이 불균일하게 되어 섬락의 원인이 된다.','전류의 파형은 찌그러지나 출력에는 변화가 없다.'],ans:4,
+ e:`전기자반작용은 주자속을 감소시키므로 <strong>출력도 감소</strong>한다.<br>④ 출력도 변한다 → 틀린 설명`},
+
+{n:37,g:'s',yr:'산업 98년 5회·01년 1회·19년 2회',
+ q:'다음은 직류발전기 정류곡선이다. 이중에서 정류 말기에 정류상태가 좋지 않은 것은?',
+ o:['1','2','3','4'],ans:2,
+ svg:`<img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAIlAmcDASIAAhEBAxEB/8QAHQABAAIDAQEBAQAAAAAAAAAAAAYHAwUIBAECCf/EAFQQAAEEAQQBAQUGAgMLBwgLAAEAAgMEBQYHERIhEwgUFiIxFUFRV5TUIzIXM2EJJEJWcYGVlrTS1Tc4YnV2sbMYUlN0goSl0yUmNjlDRHeRksPw/8QAFwEBAQEBAAAAAAAAAAAAAAAAAAECA//EADMRAQABAgIJAwMDAwUAAAAAAAABAhEhMQMSQVFxkaGx8GGBwXLR4SIy8TOCohNCUrLC/9oADAMBAAIRAxEAPwDstERAREQERarUupdOaZrRWdSagxOFgmf0ikyFyOu17uOeoLyATx54CDaoohV3R2ytWYq1bcXSE88zxHFFHmq7nPcTwGgB/JJPjgKXoCIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIi82Vmt18XasUKfv1uKF74K3qiP1nhpLWdz4byeByfA5UmbRdYi82elVjslqvPak1JuLSzN0WYcLqWWlQHpMYYoAxpDOWgduDz5PJ8/VauzuDvjHYlZD7PXrRNeQyT4zpN7jnweC3xz+CqzZHWW69DU240uG2Y+2J7WpJJr8PxPVg9xnLG8w9nN4k4HB7t8eUpm9X9s96fz22lcWpt6/FXn8OtV8exr2lr2hzT9QRyFXm32rdz81qD3LVu0XwpjfRc/wB/+I6135xxwz042h3nk+foOFYisxhikSoj2RMXjqQ3KfUo14HM1vfga5kYBbGwM6sH4AdncD7uSr3VKeyh/V7mf9vcl/3Rq61f9lH00/8AWFq/fX9VXeRERRBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQFS3s2f/bPd7/tjN/4bVdK+BrQSQACTyeB9SpEWq1vSY6xPwTjFvW/SY+X1EWo1TW1Lapxx6ZzOLxVgP5klvYx9wOb+DWtmi4PP3kn/J96SKr9lD+r3M/7e5L/ALo1Md1c/aqyYPS2NmdWu6iyMdB1kRtcYITHLJK9ody0v6Qva3kEAuBIPHBi21O1WvtAXstLX3KxWUr5jKOyd+G1pktLpX/1hjcy0OnYAfUOA4Hj6gyPebTeQvUMfqrTeP8AftSaduR36VYPDffGtbIx8BcSA0OZNJwfuPHg/QyvCNHujVieERET5uaib1V751rcZmbNRp7YnSWkNZY7VOgzLp63HK77TYXPtNyELge0Z9V59I9uHBzOPoRwefFrqHYrWsudsUauFwOajle9pvvyWIt0o6kfUklpnijEx7AM4YeR27cEAhTEc8Dkgn7+Fu0xFtnmXp0zY2389/Xr0ERFFEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQE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" style="max-width:280px;width:100%;display:block;margin:0 auto;border-radius:8px;">`,
+ e:`리액턴스 전압 \\(e_L = L\\dfrac{2I_c}{T_c}\\) 이 크면 정류 불량 발생<br><br>
+⊙ <strong>① 직선정류</strong> : 가장 이상적인 정류곡선<br>
+⊙ <strong>② 부족정류 ← 정답</strong> : 정류 말기에 전류변화가 커서 불량<br>
+⊙ <strong>③ 정현정류</strong> : 일반적인 정류곡선<br>
+⊙ <strong>④ 과정류</strong> : 정류 초기에 나타나는 정류곡선`},
+
+{n:38,g:'gs',yr:'기사 96년 4회·99년 5회·17년 2회 / 산업 92년 2회',
+ q:'직류기에서 정류 코일의 자기 인덕턴스를 L이라 할 때 정류 코일의 전류가 정류주기 Tc 사이에 Ic에서 −Ic로 변한다면 정류 코일의 리액턴스 전압[V]의 평균값은?',
+ o:['\\(L\\dfrac{T_c}{2I_c}\\)','\\(L\\dfrac{I_c}{2T_c}\\)','\\(L\\dfrac{2I_c}{T_c}\\)','\\(L\\dfrac{I_c}{T_c}\\)'],ans:3,
+ e:`<div class="fb0"><div class="fl">\\( e_L = L\\dfrac{2I_c}{T_c}\\;[\\text{V}] \\)</div></div>
+L : 인덕턴스 &nbsp; Ic : 정류전류 &nbsp; Tc : 정류주기`},
+
+{n:40,g:'s',yr:'산업 91년 6회·14년 3회',
+ q:'직류기에 탄소 브러시를 사용하는 이유는 무엇때문인가?',
+ o:['고유저항이 작다.','접촉저항이 작다.','접촉저항이 크다.','고유저항이 크다.'],ans:3,
+ e:`탄소 브러시는 <strong>접촉저항이 크기</strong> 때문에 정류 중 개방·단락 시 브러시의 마모 및 파손을 방지한다.`},
+
+{n:41,g:'gs',yr:'기사 19년 2회 / 산업 04년 2회·08년 2회·12년 1~3회(유사)·13년 2회',
+ q:'직류기의 양호한 정류를 얻는 조건이 아닌 것은?',
+ o:['정류주기를 크게 할 것','정류 코일의 인덕턴스를 작게 할 것','리액턴스 전압을 작게 할 것','브러시 접촉저항을 작게 할 것'],ans:4,
+ e:`\\(e_L = L\\dfrac{2I_c}{T_c}\\) → L↓, Tc↑ 하면 리액턴스 전압 감소<br>
+<div class="tip">브러시 접촉저항은 <strong>크게</strong> 해야 양호한 정류 (탄소 브러시 사용 이유)</div>`},
+
+{n:52,g:'gs',yr:'기사 98년 2회·03년 2회 / 산업 98년 2회',
+ q:'무부하에서 자기여자로서 전압을 확립하지 못하는 직류발전기는?',
+ o:['타여자발전기','직권발전기','분권발전기','차동 복권발전기'],ans:2,
+ e:`직권발전기의 특성 : \\(I_a = I_f = I_n\\)<br>
+무부하 → 전류 0 → 계자 자속 없음 → <strong>전압 확립 불가</strong>`},
+
+{n:53,g:'gs',yr:'기사 93년 5회·98년 3회·03년 1회·04년 3회 / 산업 04년 4회·14년 3회',
+ q:'직류발전기의 계자철심에 잔류자기가 없어도 발전을 할 수 있는 발전기는?',
+ o:['타여자발전기','분권발전기','직권발전기','복권발전기'],ans:1,
+ e:`<strong>타여자발전기</strong> : 계자권선이 별도의 외부전원 회로이므로 잔류자기 없어도 전압확립 가능`},
+
+{n:54,g:'s',yr:'산업 15년 3회',
+ q:'직류 타여자발전기의 부하전류와 전기자전류의 크기는?',
+ o:['부하전류가 전기자전류보다 크다.','전기자전류가 부하전류보다 크다.','전기자전류와 부하전류가 같다.','전기자전류와 부하전류는 항상 0이다.'],ans:3,
+ e:`타여자발전기는 전기자와 부하가 직렬 접속 → \\(I_a = I_n\\)`},
+
+{n:55,g:'gs',yr:'기사 95년 2회·99년 5회·15년 3회 / 산업 90년 6회·96년 4회·19년 2회(유사)',
+ q:'직류분권발전기를 서서히 단락상태로 하면 어떠한 상태로 되는가?',
+ o:['과전류로 소손된다.','과전압이 된다.','소전류가 흐른다.','운전이 정지된다.'],ans:3,
+ e:`단락 시 전기자전류가 단락점으로 흐르므로 계자에는 잔류자기만 남아 기자력이 작아짐 → <strong>소전류</strong> 흐름`},
+
+{n:58,g:'gs',yr:'기사 91년 6회·17년 1회 / 산업 94년 2회·11년 2회',
+ q:'분권발전기의 회전방향을 반대로 하면 일어나는 현상은?',
+ o:['발전되지 않는다.','정전 시 때와 마찬가지이다.','과대전압이 유기된다.','섬락이 일어난다.'],ans:1,
+ e:`자여자발전기(직권·분권)를 역회전 시 잔류자기가 소멸 → <strong>발전되지 않는다.</strong>`},
+
+{n:60,g:'s',yr:'산업 91년 7회·96년 4회',
+ q:'직류분권발전기의 계자회로의 개폐기를 운전 중 갑자기 열면 어떻게 되는가?',
+ o:['속도가 감소한다.','과속도가 된다.','계자권선에 고압을 유발한다.','정류자에 불꽃을 유발한다.'],ans:3,
+ e:`전자유도법칙 \\(e = -L\\dfrac{di}{dt}\\) → 계자회로 갑작스런 개방 → 계자권선에 <strong>고압 발생</strong>`},
+
+{n:61,g:'gs',yr:'기사 14년 2회(유사) / 산업 98년 4회',
+ q:'어떤 타여자발전기가 800[rpm]으로 회전할 때 120[V]의 기전력을 유도하는 데 4[A]의 여자전류를 필요로 한다. 이 발전기를 640[rpm]으로 회전하여 140[V]의 유도기기전력을 얻으려면 몇 [A]의 여자전류가 필요한가? (단, 자기회로의 포화현상은 무시한다)',
+ o:['약 6.7','약 6.4','약 5.98','약 5.83'],ans:4,
+ e:`\\(E_a \\propto k'I_f N\\)
+<div class="fb0">
+<div class="fl">\\( k' = \\dfrac{E_a}{I_f N} = \\dfrac{120}{4 \\times 800} = 0.0375 \\)</div>
+<div class="fl">\\( I_f = \\dfrac{E_a}{k' N} = \\dfrac{140}{0.0375 \\times 640} = 5.83\\;[\\text{A}] \\)</div></div>`},
+
+{n:62,g:'s',yr:'산업 93년 5회·00년 2회·02년 2회·06년 1회',
+ q:'25[kW], 125[V], 1200[rpm]의 타여자발전기가 있다. 전기자저항(브러시 포함)은 0.04[Ω]이다. 정격상태에서 속도를 200[rpm]으로 낮추었을 경우 부하전류[A]는? (단, 전기자반작용 무시, 전기자회로 및 부하저항 불변)',
+ o:['33.3','200','1200','3125'],ans:1,
+ e:`<div class="fb0">
+<div class="fl">\\( I_n = \\dfrac{25000}{125} = 200\\;[\\text{A}] \\)</div>
+<div class="fl">\\( E_{1200} = 125 + 200 \\times 0.04 = 133\\;[\\text{V}] \\)</div>
+<div class="fl">\\( E_{200} = \\dfrac{200}{1200} \\times 133 = 22\\;[\\text{V}] \\)</div>
+<div class="fl">\\( I_{200} = \\dfrac{22}{133} \\times 200 = 33.3\\;[\\text{A}] \\)</div></div>`},
+
+{n:63,g:'s',yr:'산업 95년 7회·03년 1회·06년 2회·08년 2회',
+ q:'25[kW], 125[V], 1200[rpm]의 직류 타여자발전기가 있다. 전기자저항(브러시 포함)은 0.4[Ω]이다. 정격상태에서 속도를 200[rpm]으로 낮추었다면 유기기전력은? (단, 정상상태에서 유기기전력을 E라 한다)',
+ o:['\\(\\dfrac{1}{2}E\\)','\\(\\dfrac{1}{4}E\\)','\\(\\dfrac{1}{6}E\\)','\\(\\dfrac{1}{8}E\\)'],ans:3,
+ e:`\\(E_a \\propto N\\)
+<div class="fb0"><div class="fl">\\( E_{200} = \\dfrac{200}{1200} \\times E = \\dfrac{1}{6}E \\)</div></div>`},
+
+{n:64,g:'s',yr:'산업 96년 2회·01년 1회',
+ q:'유도기전력 110[V], 전기자저항 및 계자저항이 각각 0.05[Ω]인 직권발전기가 있다. 부하전류가 100[A]라 하면 단자전압[V]은?',
+ o:['95','100','105','110'],ans:2,
+ e:`<div class="fb0"><div class="fl">\\( V_n = E_a - I_a(r_a + r_s) = 110 - 100 \\times (0.05+0.05) = 100\\;[\\text{V}] \\)</div></div>`},
+
+{n:65,g:'s',yr:'산업 93년 3회·09년 1회',
+ q:'부하전류가 50[A]일 때 단자전압이 100[V]인 직류 직권발전기의 부하전류가 70[A]로 되면 단자전압은 몇 [V]가 되겠는가? (단, 전기자저항 및 직권계자권선의 저항 각각 0.10[Ω], 전기자반작용 등 무시)',
+ o:['150','140','138','125'],ans:2,
+ e:`<div class="fb0">
+<div class="fl">\\( E_{50} = 100 + 50 \\times (0.1+0.1) = 110\\;[\\text{V}] \\)</div>
+<div class="fl">\\( E_{70} = \\dfrac{70}{50} \\times 110 = 154\\;[\\text{V}] \\quad (E_a \\propto I_a) \\)</div>
+<div class="fl">\\( V_{70} = 154 - 70 \\times 0.2 = 140\\;[\\text{V}] \\)</div></div>`},
+
+{n:67,g:'gs',yr:'기사 94년 2회·15년 3회 / 산업 15년 1회·18년 2회(유사)',
+ q:'정격전압 100[V], 정격전류 50[A]인 분권발전기의 유기기전력은 몇 [V]인가? (단, 전기자저항 0.2[Ω], 계자전류 및 전기자반작용은 무시한다)',
+ o:['110','120','125','127.5'],ans:1,
+ e:`계자전류 무시 → \\(I_a = I_n = 50\\;[\\text{A}]\\)
+<div class="fb0"><div class="fl">\\( E_a = 100 + 50 \\times 0.2 = 110\\;[\\text{V}] \\)</div></div>`},
+
+{n:68,g:'s',yr:'산업 92년 3회·00년 7회·07년·19년 1회(유사)',
+ q:'전기자저항이 0.3[Ω]이며, 단자전압이 210[V], 부하전류가 95[A], 계자전류가 5[A]인 직류분권발전기의 유기기전력[V]은?',
+ o:['180','230','240','250'],ans:3,
+ e:`<div class="fb0">
+<div class="fl">\\( I_a = I_f + I_n = 5 + 95 = 100\\;[\\text{A}] \\)</div>
+<div class="fl">\\( E_a = V_n + I_a r_a = 210 + 100 \\times 0.3 = 240\\;[\\text{V}] \\)</div></div>`},
+
+{n:69,g:'gs',yr:'기사 13년 3회·14년 1회(유사) / 산업 92년 7회·14년 1회(유사)',
+ q:'정격속도로 회전하고 있는 무부하의 분권발전기가 있다. 계자저항이 40[Ω], 계자전류가 3[A], 전기자저항이 2[Ω]일 때 유기기전력은 얼마인가?',
+ o:['114[V]','120[V]','126[V]','132[V]'],ans:3,
+ e:`무부하 → \\(I_a = I_f = 3\\;[\\text{A}]\\)
+<div class="fb0"><div class="fl">\\( E_a = I_f r_f + I_a r_a = 3 \\times 40 + 3 \\times 2 = 126\\;[\\text{V}] \\)</div></div>`},
+
+{n:70,g:'gs',yr:'기사 19년 2회(유사) / 산업 90년 6회·98년 5회·00년 4회·01년 1회',
+ q:'무부하전압 213[V], 단자전압 200[V], 정격출력 80[kW]의 분권발전기가 있다. 계자저항 20[Ω], 전부하 시 전기자반작용에 의한 전압강하가 4.8[V]라면 전기자회로의 저항[Ω]은?',
+ o:['0.02','0.05','0.08','0.1'],ans:1,
+ e:`<div class="fb0">
+<div class="fl">\\( I_a = \\dfrac{P}{V_n} + \\dfrac{V_n}{r_f} = \\dfrac{80000}{200} + \\dfrac{200}{20} = 410\\;[\\text{A}] \\)</div>
+<div class="fl">\\( r_a = \\dfrac{E_a - V_n - e_a}{I_a} = \\dfrac{213 - 200 - 4.8}{410} = 0.02\\;[\\Omega] \\)</div></div>`},
+
+{n:73,g:'s',yr:'산업 93년 6회·97년 5회·12년 1회·16년 3회(유사)',
+ q:'전기자저항이 0.05[Ω]인 직류분권발전기가 있다. 회전수 1000[rpm], 단자전압 220[V]일 때 전기자전류가 100[A]였다. 이것을 전동기로 사용하여 단자전압 및 전기자전류가 동일할 때 회전수[rpm]는? (단, 전기자반작용 무시)',
+ o:['약 1046.5','약 977.8','약 977.3','약 955.5'],ans:4,
+ e:`<div class="fb0">
+<div class="fl">발전기 유기기전력 \\( E_a = 220 + 100 \\times 0.05 = 225\\;[\\text{V}] \\)</div>
+<div class="fl">전동기 역기전력 \\( E_c = 220 - 100 \\times 0.05 = 215\\;[\\text{V}] \\)</div>
+<div class="fl">\\( N_{전동기} = 1000 \\times \\dfrac{215}{225} = 955.5\\;[\\text{rpm}] \\)</div></div>`},
+
+{n:74,g:'gs',yr:'기사 93년 2회·05년 2회 / 산업 14년 2회(유사)',
+ q:'직류분권발전기의 무부하포화곡선이 \\(V = \\dfrac{940i_f}{33+i_f}\\) (if : 계자전류[A])로 주어질 때 계자저항이 20[Ω]이면 몇 [V]의 전압이 유기되는가?',
+ o:['140','160','280','300'],ans:3,
+ e:`<div class="fb0">
+<div class="fl">\\( I_f \\times 20 = \\dfrac{940 I_f}{33 + I_f} \\)</div>
+<div class="fl">\\( 20(33 + I_f) = 940 \\Rightarrow I_f = 14\\;[\\text{A}] \\)</div>
+<div class="fl">\\( V = I_f \\times r_f = 14 \\times 20 = 280\\;[\\text{V}] \\)</div></div>`},
+
+{n:75,g:'s',yr:'산업 04년 2회·07년 1회',
+ q:'가동 복권발전기의 내부결선을 바꾸어 직권발전기로 사용하려면 어떻게 하는가?',
+ o:['직권계자를 단락시킨다.','분권계자를 개방시킨다.','직권계자를 개방시킨다.','외분권 복권형으로 한다.'],ans:2,
+ e:`⊙ 직권계자 단락 → 분권발전기<br>⊙ <strong>분권계자 개방 → 직권발전기</strong>`},
+
+{n:76,g:'s',yr:'산업 94년 2회·02년 1회·02년 4회',
+ q:'가동 복권발전기의 내부결선을 바꾸어 분권발전기로 하자면 어떻게 하는가?',
+ o:['내분권 복권형으로 해야 한다.','외분권 복권형으로 해야 한다.','분권계자를 단락시킨다.','직권계자를 단락시킨다.'],ans:4,
+ e:`⊙ <strong>직권계자 단락 → 분권발전기</strong><br>⊙ 분권계자 개방 → 직권발전기`},
+
+{n:77,g:'gs',yr:'기사 94년 5회 / 산업 94년 5회',
+ q:'정격 220[V], 95[kW]의 내분권 가동 복권발전기가 있다. 정격전압에서 부하전류가 40[A]일 때 유기기전력은? (단, 전기자저항 rₐ = 0.1[Ω], 직권계자저항 rₛ = 0.05[Ω], 분권계자저항 r_f = 55.5[Ω], 전기자반작용 무시)',
+ o:['225.5[V]','226.4[V]','227.3[V]','228.5[V]'],ans:2,
+ e:`<div class="fb0">
+<div class="fl">\\( V_n' = V_n + r_s \\cdot I_n = 220 + 0.05 \\times 40 = 222\\;[\\text{V}] \\)</div>
+<div class="fl">\\( I_f = \\dfrac{V_n'}{r_f} = \\dfrac{222}{55.5} = 4\\;[\\text{A}] \\)</div>
+<div class="fl">\\( I_a = I_f + I_n = 4 + 40 = 44\\;[\\text{A}] \\)</div>
+<div class="fl">\\( E_a = V_n' + r_a \\cdot I_a = 222 + 0.1 \\times 44 = 226.4\\;[\\text{V}] \\)</div></div>`},
+
+{n:78,g:'s',yr:'산업 98년 4회',
+ q:'전기자권선의 저항 0.08[Ω], 직권계자권선 및 분권계자회로의 저항이 각각 0.07[Ω]과 100[Ω]인 외분권 가동 복권발전기의 부하전류가 18[A]일 때, 단자전압이 V = 200[V]라면 유기기전력[V]은? (단, 전기자반작용과 브러시 접촉저항은 무시한다)',
+ o:['201.5','203','205.4','207'],ans:2,
+ e:`외분권이므로 정격전압 = 분권계자 전압 → \\(V_n = I_f \\cdot r_f\\)
+<div class="fb0">
+<div class="fl">\\( I_f = \\dfrac{V_n}{r_f} = \\dfrac{200}{100} = 2\\;[\\text{A}] \\)</div>
+<div class="fl">\\( I_a = I_f + I_n = 2 + 18 = 20\\;[\\text{A}] \\)</div>
+<div class="fl">\\( E_a = V_n + I_a(r_a + r_s) = 200 + 20 \\times (0.08+0.07) = 203\\;[\\text{V}] \\)</div></div>`},
+
+{n:79,g:'s',yr:'산업 91년 6회·98년 7회·00년 6회',
+ q:'무부하전압 250[V], 정격전압 210[V]인 발전기의 전압변동률[%]은?',
+ o:['16','17','19','22'],ans:3,
+ e:`<div class="fb0"><div class="fl">\\( \\varepsilon = \\dfrac{V_0 - V_n}{V_n} \\times 100 = \\dfrac{250-210}{210} \\times 100 = 19.04 \\approx 19\\;[\\%] \\)</div></div>
+\\(V_0\\) : 무부하전압 &nbsp; \\(V_n\\) : 정격전압`},
+
+{n:80,g:'s',yr:'산업 93년 4회·97년 2회·01년 1회·03년 4회',
+ q:'무부하 때 119[V]인 분권발전기가 6[%]의 전압변동률을 가지고 있다고 한다. 전부하 단자전압은 몇 [V]인가?',
+ o:['105.1','112.2','125.6','145.2'],ans:2,
+ e:`<div class="fb0">
+<div class="fl">\\( \\varepsilon = \\dfrac{V_0 - V_n}{V_n} \\times 100 \\) 에서</div>
+<div class="fl">\\( V_n = \\dfrac{V_0}{1 + \\dfrac{\\varepsilon}{100}} = \\dfrac{119}{1 + \\dfrac{6}{100}} = 112.2\\;[\\text{V}] \\)</div></div>`},
+
+{n:81,g:'gs',yr:'기사 91년 3회·96년 7회·00년 1회 / 산업 98년 7회·00년 6회·01년 1회·07년 4회',
+ q:'직류기에서 전압변동률이 (+)값으로 표시되는 발전기는?',
+ o:['과복권발전기','직권발전기','분권발전기','평복권발전기'],ans:3,
+ e:`<table class="ctbl"><tr><th>ε 부호</th><th>발전기 종류</th></tr>
+<tr><td>ε (+)</td><td>타여자, <strong>분권</strong>, 부족복권</td></tr>
+<tr><td>ε (0)</td><td>평복권</td></tr>
+<tr><td>ε (−)</td><td>과복권, 직권</td></tr></table>
+<div class="tip">부하 시 전압이 무부하보다 낮아지면 ε (+)</div>`},
+
+{n:82,g:'s',yr:'산업 16년 1회',
+ q:'직류발전기 중 무부하일 때보다 부하가 증가한 경우에 단자전압이 상승하는 발전기는?',
+ o:['직권발전기','분권발전기','과복권발전기','차동 복권발전기'],ans:3,
+ e:`부하 증가 시 단자전압 상승 → 전압변동률 ε(−) → <strong>과복권발전기</strong>의 특성`},
+
+{n:86,g:'gs',yr:'기사 91년 6회·99년 3회·16년 3회 / 산업 90년 2회·97년 7회·11년 2회',
+ q:'직류분권발전기의 병렬운전을 하기 위해서는 발전기용량 P와 정격전압 V는?',
+ o:['P도 V도 임의이다.','P는 임의, V는 같다.','P는 같고, V는 임의이다.','P도, V도 같다.'],ans:2,
+ e:`병렬운전 시 용량·출력은 달라도 되지만 <strong>정격(단자)전압은 같아야 한다.</strong><br>
+⊙ 극성이 같을 것 &nbsp;⊙ 정격전압이 같을 것 &nbsp;⊙ 외부특성곡선이 일치할 것<br>
+⊙ 직권·복권 발전기의 경우 균압(모)선 접속`},
+
+{n:87,g:'gs',yr:'기사 97년 6회·11년 3회·12년 3회·17년 1회 / 산업 13년 3회(유사)',
+ q:'직류발전기의 병렬운전에 있어서 균압선을 붙이는 발전기는?',
+ o:['분권발전기, 직권발전기','분권발전기, 복권발전기','직권발전기, 복권발전기','분권발전기, 단극발전기'],ans:3,
+ e:`<strong>직권 및 복권 발전기</strong>의 경우 안정된 병렬운전을 위해 균압(모)선을 설치한다.`},
+
+{n:93,g:'s',yr:'산업 95년 2회',
+ q:'다음 중 직류발전기의 무부하포화곡선과 관계되는 것은?',
+ o:['부하전류와 계자전류','단자전압과 계자전류','단자전압과 부하전류','출력과 부하전류'],ans:2,
+ e:`<strong>직류발전기 특성곡선</strong><br>
+⊙ 무부하포화곡선 : 계자전류 ↔ 유기기전력(단자전압)<br>
+⊙ 부하포화곡선 : 계자전류 ↔ 단자전압 (부하전류 일정)<br>
+⊙ 외부특성곡선 : 부하전류 ↔ 단자전압<br>
+⊙ 위상특성곡선(V곡선) : 계자전류 ↔ 부하전류`},
+
+{n:94,g:'s',yr:'산업 91년 7회',
+ q:'다음 그림과 같은 직류발전기의 포화특성곡선에서 포화율은?',
+ o:['OF/OG','OE/DE','BC/CD','CD/CO'],ans:3,
+ svg:`<svg viewBox="0 0 290 200" xmlns="http://www.w3.org/2000/svg" style="background:#0b0e16;border-radius:8px;display:block;margin:0 auto;">
+  <defs><marker id="ah3" markerWidth="7" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#5b9cf6"/></marker></defs>
+  <line x1="35" y1="170" x2="260" y2="170" stroke="#5b9cf6" stroke-width="1.5" marker-end="url(#ah3)"/>
+  <line x1="35" y1="10" x2="35" y2="175" stroke="#5b9cf6" stroke-width="1.5"/>
+  <text x="262" y="173" fill="#8e97be" font-size="10">여자전류</text>
+  <text x="8" y="15" fill="#8e97be" font-size="9">유기</text>
+  <text x="8" y="25" fill="#8e97be" font-size="9">기전력</text>
+  <text x="29" y="173" fill="#8e97be" font-size="9">O</text>
+  <!-- 공극선 (직선 OC) -->
+  <line x1="35" y1="170" x2="188" y2="25" stroke="#3ecf8e" stroke-width="1.8"/>
+  <text x="190" y="23" fill="#3ecf8e" font-size="9">공극선</text>
+  <!-- 포화곡선 -->
+  <path d="M35,170 Q75,95 130,58 Q162,40 230,35" stroke="#f5c842" stroke-width="2" fill="none"/>
+  <text x="232" y="33" fill="#f5c842" font-size="9">포화곡선</text>
+  <!-- A점 수직선 -->
+  <line x1="130" y1="170" x2="130" y2="25" stroke="#555" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="127" y="182" fill="#8e97be" font-size="9">A</text>
+  <!-- 포화곡선 위 점 B (x=130, y≈58) -->
+  <circle cx="130" cy="58" r="3.5" fill="#f05a5a"/>
+  <text x="136" y="60" fill="#f05a5a" font-size="10" font-weight="bold">B</text>
+  <!-- 공극선 위 점 C (x=130, y≈37) -->
+  <circle cx="130" cy="37" r="3.5" fill="#3ecf8e"/>
+  <text x="136" y="38" fill="#3ecf8e" font-size="10" font-weight="bold">C</text>
+  <!-- BC 화살 -->
+  <line x1="120" y1="58" x2="120" y2="37" stroke="#f5c842" stroke-width="1.8"/>
+  <text x="100" y="50" fill="#f5c842" font-size="9">BC</text>
+  <!-- CD 화살 -->
+  <line x1="120" y1="37" x2="120" y2="170" stroke="#cc77ff" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <text x="100" y="105" fill="#cc77ff" font-size="9">CD</text>
+</svg>`,
+ e:`<div class="fb0"><div class="fl">\\( \\text{포화율} = \\dfrac{CB}{DC} \\)</div></div>
+⊙ OC : 공극선 &nbsp; OB : 무부하포화곡선`},
+
+{n:97,g:'s',yr:'산업 03년 3회·06년 1회',
+ q:'다음 설명 중 전동기의 부하가 증가할 때 현상으로 틀린 것은?',
+ o:['전동기의 속도가 떨어진다.','역기전력이 감소한다.','전동기의 전류가 증가한다.','전동기의 단자전압이 증가한다.'],ans:4,
+ e:`⊙ ①②③ 모두 맞음<br>⊙ <strong>단자전압은 전원전압으로 일정</strong>하므로 ④가 틀린 것`},
+
+{n:98,g:'s',yr:'산업 15년 1회',
+ q:'직류전동기의 역기전력에 대한 설명 중 틀린 것은?',
+ o:['역기전력이 증가할수록 전기자전류는 감소한다.','역기전력은 속도에 비례한다.','역기전력은 회전방향에 따라 크기가 다르다.','부하가 걸려 있을 때에는 역기전력은 공급전압보다 크기가 작다.'],ans:3,
+ e:`\\(E_c = \\dfrac{PZ\\phi}{a} \\cdot \\dfrac{N}{60}\\) 에서 역기전력의 크기는 <strong>회전방향과 무관</strong>하다.`},
+
+{n:100,g:'s',yr:'산업 94년 2회·95년 4회·96년 6회·00년 5회·03년 4회',
+ q:'직류분권전동기가 있다. 전도체수 100, 단중 파권으로 자극수는 4, 자속수 3.14[Wb]이다. 부하를 걸어 전기자에 5[A]의 전류가 흐르고 있다면 이 전동기의 토크[N·m]는 약 얼마인가?',
+ o:['400','450','500','550'],ans:3,
+ e:`파권 → 병렬회로수 a = 2
+<div class="fb0"><div class="fl">\\( T = \\dfrac{PZ\\phi I_a}{2\\pi a} = \\dfrac{4 \\times 100 \\times 3.14 \\times 5}{2 \\times 3.14 \\times 2} = 500\\;[\\text{N·m}] \\)</div></div>`},
+
+{n:102,g:'s',yr:'산업 98년 5회·13년 1회',
+ q:'P[kW], N[rpm]인 전동기의 토크[kg·m]는?',
+ o:['\\(975\\,\\dfrac{P}{N}\\)','\\(856\\,\\dfrac{P}{N}\\)','\\(716\\,\\dfrac{P}{N}\\)','\\(675\\,\\dfrac{P}{N}\\)'],ans:1,
+ e:`<div class="fb0"><div class="fl">\\( T = 0.975 \\times \\dfrac{P_o}{N} = 975 \\cdot \\dfrac{P}{N}\\;[\\text{kg·m}] \\)</div></div>
+1[kg·m] = 9.8[N·m]`},
+
+{n:103,g:'s',yr:'산업 98년 3회·07년 2회',
+ q:'출력 4[kW], 1400[rpm]인 전동기의 토크[kg·m]는?',
+ o:['2.79','27.9','2.6','26.5'],ans:1,
+ e:`<div class="fb0"><div class="fl">\\( T = 0.975 \\times \\dfrac{4000}{1400} = 2.79\\;[\\text{kg·m}] \\)</div></div>`},
+
+{n:104,g:'s',yr:'산업 97년 5회·99년 6회·07년 3회',
+ q:'출력 10[HP], 600[rpm]인 전동기의 토크[kg·m]는 얼마인가?',
+ o:['약 11.9','약 12.1','약 0.02','약 0.2'],ans:2,
+ e:`<div class="fb0">
+<div class="fl">\\( 10\\;[\\text{HP}] = 10 \\times 746 = 7460\\;[\\text{W}] \\)</div>
+<div class="fl">\\( T = 0.975 \\times \\dfrac{7460}{600} = 12.1\\;[\\text{kg·m}] \\)</div></div>`},
+
+{n:106,g:'gs',yr:'기사 14년 1회 / 산업 93년 1회·07년 3회·13년 3회(유사)',
+ q:'단자전압 210[V], 전기자전류 110[A], 회전속도 1200[rpm]으로 운전하고 있는 직류전동기가 있다. 역기전력[V]은 얼마인가? (단, 전기자회로의 저항은 0.2[Ω]이다)',
+ o:['82','120','188','210'],ans:3,
+ e:`<div class="fb0"><div class="fl">\\( E_c = V_n - I_a r_a = 210 - 0.2 \\times 110 = 188\\;[\\text{V}] \\)</div></div>`},
+
+{n:107,g:'gs',yr:'기사 11년 1회(유사)·15년 2회 / 산업 98년 5회·00년 4회·13년 3회(유사)',
+ q:'직류전동기의 역기전력이 220[V], 분당 회전수가 1200[rpm]일 때 토크가 15[kg·m]가 발생한다면 전기자전류는 약 몇 [A]인가?',
+ o:['54','67','84','96'],ans:3,
+ e:`<div class="fb0">
+<div class="fl">\\( T = 0.975 \\times \\dfrac{E_c I_a}{N}\\;[\\text{kg·m}] \\)</div>
+<div class="fl">\\( I_a = \\dfrac{TN}{0.975 E_c} = \\dfrac{15 \\times 1200}{0.975 \\times 220} = 84\\;[\\text{A}] \\)</div></div>`},
+
+{n:112,g:'s',yr:'산업 90년 2회·16년 1회',
+ q:'직류직권전동기에서 토크 T와 회전수 N과의 관계는?',
+ o:['T ∝ N','T ∝ N²','T ∝ 1/N','T ∝ 1/N²'],ans:4,
+ e:`<strong>직권전동기의 특성</strong>
+<div class="fb0"><div class="fl">\\( T \\propto I_a^2 \\propto \\dfrac{1}{N^2} \\)</div></div>`},
+
+{n:115,g:'s',yr:'산업 04년 1회·12년 2회·18년 2회',
+ q:'정격전압에서 전부하로 운전할 때 50[A]의 부하전류가 흐르는 직류직권전동기가 있다. 지금 이 전동기의 부하 토크만이 1/2로 감소하면 그 부하전류는? (단, 자기포화는 무시한다)',
+ o:['25[A]','35[A]','45[A]','50[A]'],ans:2,
+ e:`직권전동기 \\(T \\propto I_a^2\\)
+<div class="fb0"><div class="fl">\\( I_a = \\sqrt{\\dfrac{1}{2}} \\times 50 = 35.35 \\approx 35\\;[\\text{A}] \\)</div></div>`},
+
+{n:116,g:'s',yr:'산업 93년 1회·96년 5회·99년 7회',
+ q:'정격속도 1000[rpm]의 직류직권전동기의 부하 토크가 3/4으로 감소하였을 때 회전수[rpm]는 대략 얼마인가? (단, 자기포화는 무시한다)',
+ o:['866','1000','1154','1300'],ans:3,
+ e:`\\(T \\propto \\dfrac{1}{N^2}\\)
+<div class="fb0">
+<div class="fl">\\( T : \\dfrac{3}{4}T = \\dfrac{1}{1000^2} : \\dfrac{1}{N^2} \\)</div>
+<div class="fl">\\( N = \\sqrt{\\dfrac{4}{3}} \\times 1000 = 1154\\;[\\text{rpm}] \\)</div></div>`},
+
+{n:117,g:'gs',yr:'기사 11년 3회·13년 3회 / 산업 90년 6회·93년 5회·96년 6회·12년 2회(유사)',
+ q:'직류전동기가 부하전류 100[A]일 때 1000[rpm]으로 12[kg·m]의 토크를 발생하고 있다. 부하를 감소시켜 60[A]로 되었을 때 토크[kg·m]는 얼마인가? (단, 직류전동기는 직권이다)',
+ o:['4.32','7.2','20.07','33.3'],ans:1,
+ e:`직권전동기 \\(T \\propto I_a^2\\)
+<div class="fb0">
+<div class="fl">\\( 12 : T = 100^2 : 60^2 \\)</div>
+<div class="fl">\\( T = \\left(\\dfrac{60}{100}\\right)^2 \\times 12 = 4.32\\;[\\text{kg·m}] \\)</div></div>`},
+
+{n:118,g:'s',yr:'산업 99년 6회',
+ q:'직권전동기에서 위험속도가 되는 경우는?',
+ o:['정격전압, 무부하','저전압, 과여자','전기자에 저저항 접속','정격전압, 과부하'],ans:1,
+ e:`<div class="fb0">
+<div class="fl">⊙ 직권전동기 위험상태 : <strong>정격전압, 무부하</strong></div>
+<div class="fl">⊙ 분권전동기 위험속도 : 정격전압, 무여자</div></div>`},
+
+{n:119,g:'s',yr:'산업 90년 2회·98년 3회·18년 2회(유사)',
+ q:'직류직권전동기에서 벨트(belt)를 걸고 운전하면 안 되는 이유는?',
+ o:['손실이 많아진다.','직결하지 않으면 속도제어가 곤란하다.','벨트가 벗어지면 위험속도에 도달한다.','벨트가 마모하여 보수가 곤란하다.'],ans:3,
+ e:`벨트가 벗겨지면 무부하 상태 → <strong>위험속도에 도달</strong> → 기어·체인을 이용`},
+
+{n:120,g:'s',yr:'산업 91년 3회·03년 1회·09년 1회',
+ q:'직류전동기의 공급전압을 V[V], 자속을 φ[Wb], 전기자전류를 I[A], 전기자저항을 Ra[Ω], 속도를 N[rps]이라 할 때 속도식은? (단, k는 상수이다)',
+ o:['\\(N = k\\,\\dfrac{V + R_a I_a}{\\phi}\\)','\\(N = k\\,\\dfrac{V - R_a I_a}{\\phi}\\)','\\(N = k\\,\\dfrac{\\phi}{V + R_a I_a}\\)','\\(N = k\\,\\dfrac{\\phi}{V - R_a I_a}\\)'],ans:2,
+ e:`<div class="fb0"><div class="fl">\\( N = k \\cdot \\dfrac{E_c}{\\phi} = k \\cdot \\dfrac{V - R_a I_a}{\\phi}\\;[\\text{rps}] \\)</div></div>
+기계적 상수 \\(k = \\dfrac{PZ}{a}\\)`},
+
+{n:122,g:'gs',yr:'기사 14년 2회 / 산업 98년 5회·00년 4회·01년 1회·05년 1회',
+ q:'직류직권전동기가 있다. 공급전압이 525[V], 전기자전류가 50[A]일 때 회전속도는 1500[rpm]이라고 한다. 공급전압을 400[V]로 낮추었을 때 같은 전기자전류에 대한 회전속도[rpm]는? (단, 전기자권선 및 계자권선의 전저항은 0.5[Ω]이다)',
+ o:['1000[rpm]','1125[rpm]','1250[rpm]','1375[rpm]'],ans:2,
+ e:`<div class="fb0">
+<div class="fl">\\( E_{525} = 525 - 0.5 \\times 50 = 500\\;[\\text{V}] \\)</div>
+<div class="fl">\\( E_{400} = 400 - 0.5 \\times 50 = 375\\;[\\text{V}] \\)</div>
+<div class="fl">\\( N = \\dfrac{375}{500} \\times 1500 = 1125\\;[\\text{rpm}] \\)</div></div>`},
+
+{n:124,g:'s',yr:'산업 91년 6회·05년 1회',
+ q:'직류직권전동기가 있다. 전기자저항과 계자저항은 다같이 0.8[Ω]이고, 자화곡선은 회전수 200[rpm], 전류 30[A]에 대하여 전압은 300[V]이다. 이 전동기를 전압 500[V]에 사용하여 전류가 30[A]로 되는 속도를 구하면? (단, 전기자반작용, 마찰손, 풍손 및 철손은 무시한다)',
+ o:['200[rpm]','301[rpm]','452[rpm]','500[rpm]'],ans:2,
+ e:`<div class="fb0">
+<div class="fl">\\( k\\phi = \\dfrac{E_c}{n} = \\dfrac{300}{200} = 1.5 \\)</div>
+<div class="fl">\\( E_{500} = 500 - 30 \\times (0.8+0.8) = 452\\;[\\text{V}] \\)</div>
+<div class="fl">\\( N = \\dfrac{452}{1.5} = 301\\;[\\text{rpm}] \\)</div></div>`},
+
+{n:126,g:'s',yr:'산업 95년 2회·00년 3회',
+ q:'직류직권전동기의 전원극성을 반대로 하면?',
+ o:['회전방향이 변한다.','회전방향은 변하지 않는다.','속도가 증가한다.','발전기로 된다.'],ans:2,
+ e:`전원극성을 바꾸면 전기자권선과 계자권선의 전류방향이 <strong>동시에</strong> 바뀌어 회전방향은 변하지 않는다.`},
+];
+
+/* ─── render ─── */
+function rk(s){
+  const d=document.createElement('div');
+  d.innerHTML=s;
+  renderMathInElement(d,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false});
+  return d.innerHTML;
+}
+
+function mk(q){
+  const id='q'+q.n;
+  const tg=q.g.split('').map(c=>c==='g'?'<span class="tg tg-g">기사</span>':'<span class="tg tg-s">산업기사</span>').join('');
+  const opts=q.o.map((o,i)=>`<div class="opt" id="${id}_o${i+1}" onclick="sel('${id}',${i+1},${q.ans})"><span class="on">${N[i]}</span><span>${rk(o)}</span></div>`).join('');
+  const sv=q.svg?`<div class="gw" style="padding:10px 15px 4px 57px">${q.svg}</div>`:'';
+  return `<div class="card" id="${id}" data-g="${q.g}" data-n="${q.n}">
+<div class="ch" onclick="tog('${id}')">
+  <div class="cn">${String(q.n).padStart(2,'0')}</div>
+  <div class="ct">
+    <div class="tags">${tg}<span class="tg tg-yr">${q.yr}</span></div>
+    <div class="qt">${rk(q.q)}</div>
+  </div>
+  <div class="arr">▼</div>
+</div>
+${sv}
+<div class="opts" id="${id}_opts">${opts}</div>
+<div class="cbody">
+  <div class="abar">
+    <button class="rtbtn" onclick="reset('${id}')">↺ 다시풀기</button>
+    <span class="rmsg" id="${id}_m"></span>
+  </div>
+  <div class="ansbar"><span class="albl">정답</span><span class="aval">${N[q.ans-1]} ${rk(q.o[q.ans-1])}</span></div>
+  <div class="expl">${rk(q.e)}</div>
+</div>
+</div>`;
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('main').innerHTML=QS.map(mk).join('');
+  upBdg();
+});
+
+/* ─── interaction ─── */
+function tog(id){document.getElementById(id).classList.toggle('open');}
+function sel(id,n,ans){
+  const os=document.querySelectorAll(`#${id}_opts .opt`);
+  if(os[0].classList.contains('lk'))return;
+  os.forEach(o=>o.classList.add('lk'));
+  if(n===ans){
+    document.getElementById(`${id}_o${ans}`).classList.add('cor');
+  }else{
+    document.getElementById(`${id}_o${n}`).classList.add('wrg');
+    document.getElementById(`${id}_o${ans}`).classList.add('cor');
+  }
+  const m=document.getElementById(`${id}_m`);
+  if(n===ans){m.textContent='✓ 정답!';m.className='rmsg ok';}
+  else{m.textContent='✗ 오답';m.className='rmsg ng';}
+  document.getElementById(id).classList.add('open');
+}
+function reset(id){
+  document.querySelectorAll(`#${id}_opts .opt`).forEach(o=>o.className='opt');
+  document.getElementById(`${id}_m`).textContent='';
+  document.getElementById(id).classList.remove('open');
+}
+function fAll(b){
+  document.querySelectorAll('.fb').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  document.querySelectorAll('.card').forEach(c=>c.style.display='');upBdg();
+}
+function fTag(t,b){
+  document.querySelectorAll('.fb').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  document.querySelectorAll('.card').forEach(c=>c.style.display=c.dataset.g&&c.dataset.g.includes(t)?'':'none');upBdg();
+}
+function doSearch(){
+  const v=document.getElementById('si').value.toLowerCase();
+  document.querySelectorAll('.card').forEach(c=>c.style.display=(!v||c.innerText.toLowerCase().includes(v)||c.dataset.n===v)?'':'none');upBdg();
+}
+function upBdg(){document.getElementById('bdg').textContent=document.querySelectorAll('.card:not([style*="none"])').length+'문제';}
+</script>
+</body>
+</html>
